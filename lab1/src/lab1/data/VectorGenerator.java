@@ -16,7 +16,8 @@ public class VectorGenerator {
 	public static double[] generateRandom(int n) {
 		final double[] A = new double[10];
 		for (int i = 0; i < 10; i++) {
-			A[i] = ThreadLocalRandom.current().nextDouble();
+			A[i] = DoublePrecisionGenerator.generateDoubleWithPrecison(0, 1000, ThreadLocalRandom.current().nextInt(3, 15));
+
 		}
 		return A;
 	}
