@@ -3,18 +3,19 @@ package lab1.data;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
 
 import lab1.fs.FileSystem;
 
 public class VectorIO {
 
 	final private String INPUT_PATH = "input.txt";
+	final private String OUTPUT_PATH = "output.txt";
+	
 	final FileSystem fs = new FileSystem();
 	
-	private Vector createNew(String name, int size) {
+	private Vector createNew(String name, int size) throws IOException {
 		Vector A = Vector.generateRandom(size);
-		//fs.write(name + "\n" + MA.toString());
+		fs.write(INPUT_PATH, name + "\n" + A.toString());
 		return A;
 	}
 
@@ -33,5 +34,9 @@ public class VectorIO {
 		String matrix = String.join("\n", Arrays.copyOfRange(lines, index, index + size));
 		
 		return Vector.generateFromString(matrix);
+	}
+	
+	public void writeResult(String name, String result) throws IOException {
+		fs.write(OUTPUT_PATH, name + "\n" + result);
 	}
 }

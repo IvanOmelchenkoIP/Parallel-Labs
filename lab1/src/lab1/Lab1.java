@@ -2,12 +2,10 @@ package lab1;
 
 import lab1.threading.F1;
 import lab1.threading.F2;
-import lab1.timer.TimeCounter;
 
 public class Lab1 {
 
 	public static void main(String[] args) {
-		TimeCounter timer = new TimeCounter();
 		long start = System.currentTimeMillis();
 		Thread t1 = new Thread(new F1());
 		Thread t2 = new Thread(new F2());
