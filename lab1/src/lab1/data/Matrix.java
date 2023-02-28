@@ -1,46 +1,89 @@
 package lab1.data;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Matrix {
 
-	double[][] MA;
+	final private static int MIN_VAL = 0;
+	final private static int MAX_VAL = 1000;
+	final private static int MIN_PRECISION = 3;
+	final private static int MAX_PRECISION = 15;
 	
-	public void multiplyByMatrix(double[][] MB) {
-		int n = MA.length;
-		
-		double[][] MC = new double[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				double[] products = new double[n];
-				for (int k = 0; k < n; k++) {
-					products[k] = MA[i][k] * MB[k][j];
+	final private int size;
+	final private double[][] valueMA;
+	
+	private Matrix(int size, double[][] valueMA) {
+		this.size = size;
+		this.valueMA = valueMA;
+	}
+	
+	public static Matrix generateFromString(String str) {
+		String[] lines = str.trim().split("\n");
+		int size = lines.length;
+		final double[][] valueMA = new double[size][size];
+		for (int i = 0; i < size; i++) {
+			String[] elements = lines[i].split(" ");
+			for (int j = 0; j < size; j++) {
+				valueMA[i][j] = Double.parseDouble(elements[j]);
+			}
+		}
+		return new Matrix(size, valueMA);
+	}
+
+	public static Matrix generateRandom(int size) {
+		final double[][] MA = new double[size][size];
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				MA[i][j] = DoublePrecisionGenerator.generateDoubleWithPrecison(MIN_VAL, MAX_VAL, ThreadLocalRandom.current().nextInt(MIN_PRECISION, MAX_PRECISION));
+			}
+		}
+		return new Matrix(size, MA);
+	}
+	
+	@Override
+	public String toString() {
+		String matrix = "";
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				matrix += valueMA[i][j] + " ";
+			}
+			matrix += "\n";
+		}
+		return matrix;
+	}
+	
+	public double[][] getValue() {
+		return valueMA;
+	}
+	
+	public void multiplyByMatrix(Matrix MB) {
+		double[][] valueMB = MB.getValue();
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				double[] products = new double[size];
+				for (int k = 0; k < size; k++) {
+					products[k] = valueMA[i][k] * valueMB[k][j];
 				}
-				MC[i][j] = KahanSum.add(products);
+				valueMA[i][j] = KahanSum.add(products);
 			}
 		}
-		MA = MC;
 	}
 	
-	public void addMatrix(double[][] MB) {
-		int n = MA.length;
-		
-		double[][] MC = new double[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				MC[i][j] = KahanSum.add(MA[i][j], MB[i][j]);
+	public void addMatrix(Matrix MB) {		
+		double[][] valueMB = MB.getValue();
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				valueMA[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j]);
 			}
 		}
-		MA = MC;
 	}
 	
-	public void subsractMatrix(double[][] MB) {
-		int n = MA.length;
-		
-		double[][] MC = new double[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				MC[i][j] = KahanSum.add(MA[i][j], MB[i][j] * (-1));
+	public void subsractMatrix(Matrix MB) {
+		double[][] valueMB = MB.getValue();
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				valueMA[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j] * (-1));
 			}
 		}
-		MA = MC;
 	}
 }

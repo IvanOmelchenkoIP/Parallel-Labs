@@ -1,41 +1,79 @@
 package lab1.data;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Vector {
 
-	double[] A;
+	final private static int MIN_VAL = 0;
+	final private static int MAX_VAL = 1000;
+	final private static int MIN_PRECISION = 3;
+	final private static int MAX_PRECISION = 15;
 	
-	public void substractVector(double B[]) {
-		int n = A.length;
-		
-		double[] C = new double[n];
-		for (int i = 0; i < n; i++) {
-			C[i] = KahanSum.add(A[i], B[i] * (-1));
-		}
-		A = C;
+	final private int size;
+	final private double[] valueA;
+	
+	private Vector(int size, double[] valueA) {
+		this.size = size;
+		this.valueA = valueA;
 	}
 	
-	public void multiplyByMatrix(double[][] MA) {
-		int n = A.length;
-		
-		double[] B = new double[n];
-		for (int i = 0; i < n; i++) {
-			double[] products = new double[n];
-			for (int j = 0; j < n; j++) {
-				products[j] = MA[i][j] * A[j];
-			}
-			B[i] = KahanSum.add(products);
+	public static Vector generateFromString(String str) {
+		String[] elements = str.trim().split("");
+		int size = elements.length;
+		final double[] valueA = new double[size];
+		for (int i = 0; i < size; i++) {
+			valueA[i] = Double.parseDouble(elements[i]);
 		}
-		A = B;
+		return new Vector(size, valueA);
+	}
+	
+	public static Vector generateRandom(int size) {
+		final double[] valueA = new double[10];
+		for (int i = 0; i < 10; i++) {
+			valueA[i] = DoublePrecisionGenerator.generateDoubleWithPrecison(MIN_VAL, MAX_VAL, ThreadLocalRandom.current().nextInt(MIN_PRECISION, MAX_PRECISION));
+		}
+		return new Vector(size, valueA);
+	}
+	
+	@Override
+	public String toString() {
+		String vector = "";
+		for (double a : valueA) {
+			vector += a + " ";
+		}
+		vector += "\n";
+		return vector;
+	}
+	
+	public double[] getValue() {
+		return valueA;
+	}
+	
+	public void substractVector(Vector B) {
+		double[] valueB = B.getValue();
+		for (int i = 0; i < size; i++) {
+			valueA[i] = KahanSum.add(valueA[i], valueB[i] * (-1));
+		}
+	}
+	
+	public void multiplyByMatrix(Matrix MA) {
+		double[][] valueMA = MA.getValue();
+		for (int i = 0; i < size; i++) {
+			double[] products = new double[size];
+			for (int j = 0; j < size; j++) {
+				products[j] = valueMA[i][j] * valueA[j];
+			}
+			valueA[i] = KahanSum.add(products);
+		}
 	}
 	
 	public double max() {
-		double max = A[0];
-		for (int i = 0; i < A.length; i++) {
-			if (A[i] > max) {
-				max = A[i];
+		double max = valueA[0];
+		for (int i = 1; i < size; i++) {
+			if (valueA[i] > max) {
+				max = valueA[i];
 			}
 		}
 		return max;
 	}
-	
 }
