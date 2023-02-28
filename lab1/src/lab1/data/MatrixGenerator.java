@@ -1,8 +1,39 @@
 package lab1.data;
 
+import java.io.File;
 import java.util.concurrent.ThreadLocalRandom;
 
+import lab1.fs.FileSystem;
+
 public class MatrixGenerator {
+	
+	FileSystem fs = new FileSystem();
+	
+	public static double[][] generateOrRead(String name, int N) {
+		String filepath = "input.txt";
+		double[][] MA;
+		
+		if (!new File(filepath).exists()) {
+			MA = generateRandom(N);
+			//fs.write(name + toString(MA, N));
+			return MA;
+		}
+		
+		//String contents = fs.read();
+		
+		return null;
+	}
+	
+	public static String toString(double[][] MA, int N) {
+		String matrix = "";
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				matrix += MA[i][j] + " ";
+			}
+			matrix += "\n";
+		}
+		return matrix;
+	}
 
 	public static double[][] generateFromString(String str) {
 

@@ -1,5 +1,7 @@
 package lab1.threading;
 
+import java.util.Arrays;
+
 import lab1.data.MatrixGenerator;
 
 public class F1 implements Runnable {
@@ -8,7 +10,7 @@ public class F1 implements Runnable {
 	
 	@Override
 	public void run() {
-		double[][] MA = MatrixGenerator.generateRandom(N);
+		double[][] MD = MatrixGenerator.generateRandom(N);
 		double[][] MT = MatrixGenerator.generateRandom(N);
 		double[][] MZ = MatrixGenerator.generateRandom(N);
 		double[][] ME = MatrixGenerator.generateRandom(N);
@@ -16,10 +18,11 @@ public class F1 implements Runnable {
 		
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				System.out.print(MA[i][j] + " ");
+				System.out.print(MD[i][j] + " ");
 			}
 			System.out.println();
 		}
+		System.out.println(Arrays.deepToString(MT));
 	}
 
 }
