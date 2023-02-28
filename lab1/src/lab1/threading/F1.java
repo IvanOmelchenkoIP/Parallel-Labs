@@ -2,6 +2,7 @@ package lab1.threading;
 
 import java.util.Arrays;
 
+import lab1.data.Matrix;
 import lab1.data.MatrixGenerator;
 
 public class F1 implements Runnable {
@@ -10,19 +11,15 @@ public class F1 implements Runnable {
 	
 	@Override
 	public void run() {
-		double[][] MD = MatrixGenerator.generateRandom(N);
-		double[][] MT = MatrixGenerator.generateRandom(N);
-		double[][] MZ = MatrixGenerator.generateRandom(N);
-		double[][] ME = MatrixGenerator.generateRandom(N);
-		double[][] MM = MatrixGenerator.generateRandom(N);
+		Matrix MD = Matrix.generateRandom(N);
+		Matrix MT = Matrix.generateRandom(N);
+		Matrix MZ = Matrix.generateRandom(N);
+		Matrix ME = Matrix.generateRandom(N);
+		Matrix MM = Matrix.generateRandom(N);
 		
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				System.out.print(MD[i][j] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println(Arrays.deepToString(MT));
+		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(MT.getMatrixMultiplyProduct(MM));
+		String result = MA.toString();
+		System.out.println(result);
 	}
 
 }

@@ -31,13 +31,13 @@ public class Matrix {
 	}
 
 	public static Matrix generateRandom(int size) {
-		final double[][] MA = new double[size][size];
+		final double[][] valueMA = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				MA[i][j] = DoublePrecisionGenerator.generateDoubleWithPrecison(MIN_VAL, MAX_VAL, ThreadLocalRandom.current().nextInt(MIN_PRECISION, MAX_PRECISION));
+				valueMA[i][j] = DoublePrecisionGenerator.generateDoubleWithPrecison(MIN_VAL, MAX_VAL, ThreadLocalRandom.current().nextInt(MIN_PRECISION, MAX_PRECISION));
 			}
 		}
-		return new Matrix(size, MA);
+		return new Matrix(size, valueMA);
 	}
 	
 	@Override
@@ -56,34 +56,42 @@ public class Matrix {
 		return valueMA;
 	}
 	
-	public void multiplyByMatrix(Matrix MB) {
+	public Matrix getMatrixMultiplyProduct(Matrix MB) {
 		double[][] valueMB = MB.getValue();
+		double[][] valueMC = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				double[] products = new double[size];
 				for (int k = 0; k < size; k++) {
 					products[k] = valueMA[i][k] * valueMB[k][j];
 				}
-				valueMA[i][j] = KahanSum.add(products);
+				valueMC[i][j] = KahanSum.add(products);
 			}
 		}
+		return new Matrix(size, valueMC);
 	}
 	
-	public void addMatrix(Matrix MB) {		
+	public Matrix getMatrixSum(Matrix MB) {		
 		double[][] valueMB = MB.getValue();
+		double[][] valueMC = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				valueMA[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j]);
+				valueMC[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j]);
 			}
 		}
+		return new Matrix(size, valueMC);
+
 	}
 	
-	public void subsractMatrix(Matrix MB) {
+	public Matrix getMatrixDifference(Matrix MB) {
 		double[][] valueMB = MB.getValue();
+		double[][] valueMC = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				valueMA[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j] * (-1));
+				valueMC[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j] * (-1));
 			}
 		}
+		return new Matrix(size, valueMC);
+
 	}
 }

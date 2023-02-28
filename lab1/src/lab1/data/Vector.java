@@ -49,22 +49,34 @@ public class Vector {
 		return valueA;
 	}
 	
-	public void substractVector(Vector B) {
+	public Vector getVectorDifference(Vector B) {
 		double[] valueB = B.getValue();
+		double[] valueC = new double[size];
 		for (int i = 0; i < size; i++) {
-			valueA[i] = KahanSum.add(valueA[i], valueB[i] * (-1));
+			valueC[i] = KahanSum.add(valueA[i], valueB[i] * (-1));
 		}
+		return new Vector(size, valueC);
 	}
 	
-	public void multiplyByMatrix(Matrix MA) {
+	public Vector getMatrixMultiplyProduct(Matrix MA) {
 		double[][] valueMA = MA.getValue();
+		double[] valueC = new double[size];
 		for (int i = 0; i < size; i++) {
 			double[] products = new double[size];
 			for (int j = 0; j < size; j++) {
 				products[j] = valueMA[i][j] * valueA[j];
 			}
-			valueA[i] = KahanSum.add(products);
+			valueC[i] = KahanSum.add(products);
 		}
+		return new Vector(size, valueC);
+	}
+	
+	public Vector getScalarMultiplyProduct(double a) {
+		double[] valueC = new double[size];
+		for (int i = 0; i < size; i++) {
+			valueC[i] *= a;
+		}
+		return new Vector(size, valueC);
 	}
 	
 	public double max() {

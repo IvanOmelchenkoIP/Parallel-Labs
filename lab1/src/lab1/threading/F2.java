@@ -1,6 +1,8 @@
 package lab1.threading;
 
+import lab1.data.Matrix;
 import lab1.data.MatrixGenerator;
+import lab1.data.Vector;
 import lab1.data.VectorGenerator;
 
 public class F2 implements Runnable {
@@ -9,11 +11,13 @@ public class F2 implements Runnable {
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		double[] D = VectorGenerator.generateRandom(N);
-		double[] B = VectorGenerator.generateRandom(N);
-		double[][] MT = MatrixGenerator.generateRandom(N);
+		Vector D = Vector.generateRandom(N);
+		Vector B = Vector.generateRandom(N);
+		Matrix MT = Matrix.generateRandom(N);
 		
+		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
+		String result = A.toString();
+		System.out.println(result);
 	}
 
 }
