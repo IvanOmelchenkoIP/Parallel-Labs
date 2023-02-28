@@ -18,7 +18,7 @@ public class Vector {
 	}
 	
 	public static Vector generateFromString(String str) {
-		String[] elements = str.trim().split("");
+		String[] elements = str.trim().split(" ");
 		int size = elements.length;
 		final double[] valueA = new double[size];
 		for (int i = 0; i < size; i++) {

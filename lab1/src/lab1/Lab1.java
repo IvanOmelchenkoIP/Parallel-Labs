@@ -11,18 +11,11 @@ public class Lab1 {
 		Thread t2 = new Thread(new F2());
 		t1.start();
 		t2.start();
-		
 		try {
 			t1.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
 			t2.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (InterruptedException ex) {
+			System.out.println(ex);
 		}
 		long ms = System.currentTimeMillis() - start;
 		System.out.println("Час виконання: " + ms + " мс");

@@ -8,8 +8,8 @@ import lab1.fs.FileSystem;
 
 public class MatrixIO {
 	
-	final private String INPUT_PATH = "input.txt";
-	final private String OUTPUT_PATH = "output.txt";
+	final private String INPUT_PATH = "../input/input.txt";
+	final private String OUTPUT_PATH = "../output/output1.txt";
 	
 	final FileSystem fs = new FileSystem();
 	
@@ -20,7 +20,8 @@ public class MatrixIO {
 	}
 
 	public Matrix generateOrRead(String name, int size) throws IOException {
-		if (new File(INPUT_PATH).exists()) {
+		if (!new File(INPUT_PATH).exists()) {
+			System.out.println(1);
 			return createNew(name, size);
 		}
 		

@@ -8,8 +8,8 @@ import lab1.fs.FileSystem;
 
 public class VectorIO {
 
-	final private String INPUT_PATH = "input.txt";
-	final private String OUTPUT_PATH = "output.txt";
+	final private String INPUT_PATH = "../input/input.txt";
+	final private String OUTPUT_PATH = "../output/output1.txt";
 	
 	final FileSystem fs = new FileSystem();
 	
@@ -20,7 +20,7 @@ public class VectorIO {
 	}
 
 	public Vector generateOrRead(String name, int size) throws IOException {
-		if (new File(INPUT_PATH).exists()) {
+		if (!new File(INPUT_PATH).exists()) {
 			return createNew(name, size);
 		}
 		
@@ -31,7 +31,7 @@ public class VectorIO {
 		
 		String[] lines = contents.split("\n");
 		int index = Arrays.asList(lines).indexOf(name) + 1;
-		String matrix = String.join("\n", Arrays.copyOfRange(lines, index, index + size));
+		String matrix = String.join("\n", Arrays.copyOfRange(lines, index, index + 1));
 		
 		return Vector.generateFromString(matrix);
 	}
