@@ -1,13 +1,11 @@
 package lab1.threading;
 
 import lab1.data.Matrix;
-import lab1.data.MatrixGenerator;
 import lab1.data.Vector;
-import lab1.data.VectorGenerator;
 
 public class F2 implements Runnable {
 
-	int N = 20;
+	int N = 100;
 	
 	@Override
 	public void run() {

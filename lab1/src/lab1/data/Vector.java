@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Vector {
 
 	final private static int MIN_VAL = 0;
-	final private static int MAX_VAL = 1000;
+	final private static int MAX_VAL = 100;
 	final private static int MIN_PRECISION = 3;
 	final private static int MAX_PRECISION = 15;
 	
@@ -28,8 +28,8 @@ public class Vector {
 	}
 	
 	public static Vector generateRandom(int size) {
-		final double[] valueA = new double[10];
-		for (int i = 0; i < 10; i++) {
+		final double[] valueA = new double[size];
+		for (int i = 0; i < size; i++) {
 			valueA[i] = DoublePrecisionGenerator.generateDoubleWithPrecison(MIN_VAL, MAX_VAL, ThreadLocalRandom.current().nextInt(MIN_PRECISION, MAX_PRECISION));
 		}
 		return new Vector(size, valueA);

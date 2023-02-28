@@ -3,11 +3,10 @@ package lab1.threading;
 import java.util.Arrays;
 
 import lab1.data.Matrix;
-import lab1.data.MatrixGenerator;
 
 public class F1 implements Runnable {
 
-	final int N = 7;
+	final int N = 100;
 	
 	@Override
 	public void run() {

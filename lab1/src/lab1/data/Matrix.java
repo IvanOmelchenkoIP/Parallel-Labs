@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Matrix {
 
 	final private static int MIN_VAL = 0;
-	final private static int MAX_VAL = 1000;
+	final private static int MAX_VAL = 100;
 	final private static int MIN_PRECISION = 3;
 	final private static int MAX_PRECISION = 15;
 	
