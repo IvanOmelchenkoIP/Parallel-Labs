@@ -7,7 +7,7 @@ import lab1.data.VectorGenerator;
 
 public class F2 implements Runnable {
 
-	int N = 100;
+	int N = 7;
 	
 	@Override
 	public void run() {
@@ -17,7 +17,11 @@ public class F2 implements Runnable {
 		
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
 		String result = A.toString();
-		System.out.println(result);
+		synchronized(System.out) {
+			System.out.println("F2");
+			System.out.println(result);
+			return;
+		}
 	}
 
 }

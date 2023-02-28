@@ -7,7 +7,7 @@ import lab1.data.MatrixGenerator;
 
 public class F1 implements Runnable {
 
-	final int N = 4;
+	final int N = 7;
 	
 	@Override
 	public void run() {
@@ -19,7 +19,12 @@ public class F1 implements Runnable {
 		
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(MT.getMatrixMultiplyProduct(MM));
 		String result = MA.toString();
-		System.out.println(result);
+		
+		synchronized(System.out) {
+			System.out.println("F1");
+			System.out.println(result);
+			return;
+		}
 	}
 
 }
