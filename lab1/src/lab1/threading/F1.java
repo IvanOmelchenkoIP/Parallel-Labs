@@ -17,7 +17,7 @@ public class F1 implements Runnable {
 		Matrix ME = Matrix.generateRandom(N);
 		Matrix MM = Matrix.generateRandom(N);
 		
-		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(MT.getMatrixMultiplyProduct(MM));
+		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
 		String result = MA.toString();
 		
 		synchronized(System.out) {

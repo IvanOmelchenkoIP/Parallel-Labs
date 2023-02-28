@@ -7,7 +7,7 @@ import lab1.data.VectorGenerator;
 
 public class F2 implements Runnable {
 
-	int N = 7;
+	int N = 20;
 	
 	@Override
 	public void run() {
