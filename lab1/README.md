@@ -10,5 +10,5 @@
 
 Завдання за варіантом:
 
-    MА =MD*MT+MZ-ME*MM;     
-	A=D*MT-max(D)*B. 	
+    MА = MD * MT + MZ - ME * MM;     
+	A = D * MT - max(D) * B. 	
