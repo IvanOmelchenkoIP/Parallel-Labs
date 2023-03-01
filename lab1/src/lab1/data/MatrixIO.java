@@ -1,3 +1,5 @@
+// ./lab1/src/lab1/data/MatrixIO.java
+
 package lab1.data;
 
 import java.io.File;
@@ -21,7 +23,6 @@ public class MatrixIO {
 
 	public Matrix generateOrRead(String name, int size) throws IOException {
 		if (!new File(INPUT_PATH).exists()) {
-			System.out.println(1);
 			return createNew(name, size);
 		}
 		

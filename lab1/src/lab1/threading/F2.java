@@ -1,3 +1,6 @@
+// ./lab1/src/lab1/threading/F2.java
+// F2 by variant: A = D * MT - max(D) * B
+
 package lab1.threading;
 
 import java.io.IOException;

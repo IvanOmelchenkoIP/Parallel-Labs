@@ -1,6 +1,8 @@
+// ./lab1/src/lab1/data/KahanSum.java
+
 package lab1.data;
 
-public class KahanSum {
+class KahanSum {
 
 	public static double add(double... nums) {
 		double sum = 0;

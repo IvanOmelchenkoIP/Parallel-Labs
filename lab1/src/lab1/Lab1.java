@@ -1,3 +1,5 @@
+// ./lab1/src/lab1/Lab1.java
+
 package lab1;
 
 import java.io.IOException;

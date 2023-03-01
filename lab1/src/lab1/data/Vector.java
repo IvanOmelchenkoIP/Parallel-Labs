@@ -1,3 +1,5 @@
+// ./lab1/src/lab1/data/Vector.java
+
 package lab1.data;
 
 import java.util.concurrent.ThreadLocalRandom;
