@@ -15,15 +15,6 @@ import java.nio.file.StandardOpenOption;
 public class FileSystem {
 
 	public void write(String filepath, String data) throws IOException {
-		/*DataOutputStream stream = null;
-		try {
-			stream = new DataOutputStream(new FileOutputStream(filepath));
-			stream.write(data.getBytes());
-		} finally {
-			if (stream != null) {
-				stream.close();
-			}
-		}*/
 		if (!new File(filepath).exists()) {
 			Files.write(Paths.get(filepath), data.getBytes(), StandardOpenOption.CREATE_NEW);
 		} else {
