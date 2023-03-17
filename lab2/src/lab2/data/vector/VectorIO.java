@@ -10,23 +10,28 @@ import lab2.fs.FileSystem;
 
 public class VectorIO {
 
-	final private String INPUT_PATH = "../input/input.txt";
-	final private String OUTPUT_PATH = "../output/output1.txt";
+	final private String inPath;
+	final private String outPath;
+	final FileSystem fs;
 	
-	final FileSystem fs = new FileSystem();
+	public VectorIO(String inPath, String outPath) {
+		this.inPath = inPath;
+		this.outPath = outPath;
+		this.fs = new FileSystem();
+	}
 	
 	private Vector createNew(String name, int size) throws IOException {
 		Vector A = Vector.generateRandom(size);
-		fs.write(INPUT_PATH, name + "\n" + A.toString());
+		fs.write(inPath, name + "\n" + A.toString());
 		return A;
 	}
 
 	public Vector generateOrRead(String name, int size) throws IOException {
-		if (!new File(INPUT_PATH).exists()) {
+		if (!new File(inPath).exists()) {
 			return createNew(name, size);
 		}
 		
-		String contents = fs.read(INPUT_PATH).trim();
+		String contents = fs.read(inPath).trim();
 		if (!contents.contains(name + "\n")) {
 			return createNew(name, size);
 		}
@@ -39,6 +44,6 @@ public class VectorIO {
 	}
 	
 	public void writeResult(String name, String result) throws IOException {
-		fs.write(OUTPUT_PATH, name + "\n" + result);
+		fs.write(outPath, name + "\n" + result);
 	}
 }

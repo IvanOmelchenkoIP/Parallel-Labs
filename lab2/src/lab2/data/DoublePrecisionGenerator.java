@@ -4,7 +4,7 @@ package lab2.data;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-class DoublePrecisionGenerator {
+public class DoublePrecisionGenerator {
 
 	public static double generateDoubleWithPrecison(int min, int max, int precision) {
 		double num = ThreadLocalRandom.current().nextDouble(min, max);

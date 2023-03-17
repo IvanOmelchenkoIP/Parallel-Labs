@@ -3,6 +3,7 @@
 package lab2;
 
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 import lab2.fs.FileSystem;
 import lab2.threading.F1;
@@ -11,12 +12,17 @@ import lab2.threading.F2;
 public class Lab2 {
 
 	public static void main(String[] args) {
-		final String OUTPUT_PATH = "../output/output1.txt";
+		final int N = 100;
+		final String INPUT_PATH = "../input/input.txt";
+		final String OUTPUT_PATH = "../output/output2.txt";
+		
+		final int ALLOWED_THREADS = 1;
+		Semaphore semaphore = new Semaphore(ALLOWED_THREADS);
 
 		FileSystem fs = new FileSystem();
 		long start = System.currentTimeMillis();
-		Thread t1 = new Thread(new F1());
-		Thread t2 = new Thread(new F2());
+		Thread t1 = new Thread(new F1(semaphore, INPUT_PATH, OUTPUT_PATH, N));
+		Thread t2 = new Thread(new F2(semaphore, INPUT_PATH, OUTPUT_PATH, N));
 		t1.start();
 		t2.start();
 		try {

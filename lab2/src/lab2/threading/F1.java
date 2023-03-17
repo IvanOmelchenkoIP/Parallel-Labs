@@ -4,14 +4,22 @@
 package lab2.threading;
 
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 import lab2.data.matrix.Matrix;
 import lab2.data.matrix.MatrixIO;
 
 public class F1 implements Runnable {
 
-	final private int N = 100;
-	final private MatrixIO mio = new MatrixIO();
+	final private int N;
+	final private MatrixIO mio;
+	private final Semaphore semaphore;
+	
+	public F1(Semaphore semaphore, String inPath, String outPath, int N) {
+		this.semaphore = semaphore;
+		this.mio = new MatrixIO(inPath, outPath);
+		this.N = N;
+	}
 	
 	@Override
 	public void run() {		

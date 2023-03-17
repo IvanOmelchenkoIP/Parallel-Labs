@@ -2,7 +2,7 @@
 
 package lab2.data;
 
-class KahanSum {
+public class KahanSum {
 
 	public static double add(double... nums) {
 		double sum = 0;
