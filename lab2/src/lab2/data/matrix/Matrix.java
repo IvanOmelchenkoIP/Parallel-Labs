@@ -80,11 +80,10 @@ public class Matrix {
 		double[][] valueMC = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				valueMC[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j]);
+				valueMC[i][j] = valueMA[i][j] + valueMB[i][j];
 			}
 		}
 		return new Matrix(size, valueMC);
-
 	}
 	
 	public Matrix getMatrixDifference(Matrix MB) {
@@ -92,10 +91,9 @@ public class Matrix {
 		double[][] valueMC = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				valueMC[i][j] = KahanSum.add(valueMA[i][j], valueMB[i][j] * (-1));
+				valueMC[i][j] = valueMA[i][j] - valueMB[i][j] * (-1);
 			}
 		}
 		return new Matrix(size, valueMC);
-
 	}
 }

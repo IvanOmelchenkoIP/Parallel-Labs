@@ -58,7 +58,7 @@ public class Vector {
 		double[] valueB = B.getValue();
 		double[] valueC = new double[size];
 		for (int i = 0; i < size; i++) {
-			valueC[i] = KahanSum.add(valueA[i], valueB[i] * (-1));
+			valueC[i] = valueA[i] - valueB[i] * (-1);
 		}
 		return new Vector(size, valueC);
 	}
