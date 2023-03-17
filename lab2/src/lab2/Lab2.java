@@ -29,8 +29,7 @@ public class Lab2 {
 		t1.start();
 		t2.start();
 		try {
-			t1.join();
-			t2.join();
+			countDownLatch.await();
 		} catch (InterruptedException ex) {
 			System.out.println("Роботу дного з потоків перервано некоректно - " + ex);
 		}

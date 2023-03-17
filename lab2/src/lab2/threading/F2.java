@@ -53,6 +53,7 @@ public class F2 implements Runnable {
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}
+			countDownLatch.countDown();
 			return;
 		}
 	}
