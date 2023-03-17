@@ -4,6 +4,7 @@
 package lab2.threading;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 import lab2.data.matrix.Matrix;
@@ -14,11 +15,13 @@ public class F1 implements Runnable {
 	final private int N;
 	final private MatrixIO mio;
 	private final Semaphore semaphore;
+	private final CountDownLatch countDownLatch;
 	
-	public F1(Semaphore semaphore, String inPath, String outPath, int N) {
-		this.semaphore = semaphore;
-		this.mio = new MatrixIO(inPath, outPath);
+	public F1(int N, String inPath, String outPath, Semaphore semaphore, CountDownLatch countDownLatch) {
 		this.N = N;
+		this.semaphore = semaphore;
+		this.countDownLatch = countDownLatch;
+		this.mio = new MatrixIO(inPath, outPath);
 	}
 	
 	@Override
