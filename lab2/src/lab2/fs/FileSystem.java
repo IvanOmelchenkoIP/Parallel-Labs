@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 public class FileSystem {
 
 	public void write(String filepath, String data) throws IOException {
-		if (!new File(filepath).exists()) {
+		if (!exists(filepath)) {
 			Files.write(Paths.get(filepath), data.getBytes(), StandardOpenOption.CREATE_NEW);
 		} else {
 			Files.write(Paths.get(filepath), data.getBytes(), StandardOpenOption.APPEND);
@@ -31,5 +31,9 @@ public class FileSystem {
 				stream.close();
 			}
 		}
+	}
+	
+	public boolean exists(String filepath) {
+		return new File(filepath).exists();
 	}
 }

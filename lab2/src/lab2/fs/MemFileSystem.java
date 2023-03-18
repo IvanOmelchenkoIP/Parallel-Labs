@@ -16,9 +16,4 @@ public class MemFileSystem extends FileSystem {
 		}
 		return contents;
 	}
-	
-	@Override
-	public void write(String filepath, String data) throws IOException {
-		super.write(filepath, data);
-	}
 }

@@ -2,22 +2,23 @@
 
 package lab2.data.matrix;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
-import lab2.fs.FileSystem;
+import lab2.data.DataFinder;
+import lab2.fs.MemFileSystem;
 
 public class MatrixIO {
 	
 	final private String inPath;
 	final private String outPath;
-	final FileSystem fs;
+	final MemFileSystem fs;
+	final DataFinder df;
 	
 	public MatrixIO(String inPath, String outPath) {
 		this.inPath = inPath;
 		this.outPath = outPath;
-		this.fs = new FileSystem();
+		this.fs = new MemFileSystem();
+		this.df = new DataFinder();
 	}
 		
 	private Matrix createNew(String name, int size) throws IOException {
@@ -27,7 +28,7 @@ public class MatrixIO {
 	}
 
 	public Matrix generateOrRead(String name, int size) throws IOException {
-		if (!new File(inPath).exists()) {
+		if (!fs.exists(inPath)) {
 			return createNew(name, size);
 		}
 		
@@ -36,11 +37,7 @@ public class MatrixIO {
 			return createNew(name, size);
 		}
 		
-		String[] lines = contents.split("\n");
-		int index = Arrays.asList(lines).indexOf(name) + 1;
-		String matrix = String.join("\n", Arrays.copyOfRange(lines, index, index + size));
-		
-		return Matrix.generateFromString(matrix);
+		return Matrix.generateFromString(df.findMatrix(contents, name, size));
 	}
 	
 	public void writeResult(String name, String result) throws IOException {
