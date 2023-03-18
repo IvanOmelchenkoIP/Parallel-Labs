@@ -7,7 +7,6 @@ import lab2.data.vector.Vector;
 
 public class DataStorage {
 	
-	private final static HashMap<String, String> files = new HashMap<String, String>();
 	private final static HashMap<String, Vector> vectors = new HashMap<String, Vector>();
 	private final static HashMap<String, Matrix> matrixes = new HashMap<String, Matrix>();
 	
@@ -25,13 +24,5 @@ public class DataStorage {
 	
 	public void addMatrix(String name, Matrix matrix) {
 		matrixes.put(name, matrix);
-	}
-	
-	public String getFileContents(String name) {
-		return files.get(name);
-	}
-	
-	public void addFile(String name, String contents) {
-		files.put(name, contents);
 	}
 }
