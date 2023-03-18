@@ -23,7 +23,7 @@ public class VectorIO {
 	
 	private Vector createNew(String name, int size) throws IOException {
 		Vector A = Vector.generateRandom(size);
-		fs.write(inPath, name + "\n" + A.toString());
+		writeVector(name, A);
 		return A;
 	}
 
@@ -40,7 +40,7 @@ public class VectorIO {
 		return Vector.generateFromString(df.findVector(contents, name));
 	}
 	
-	public void writeResult(String name, String result) throws IOException {
-		fs.write(outPath, name + "\n" + result);
+	public void writeVector(String name, Vector vector) throws IOException {
+		fs.write(outPath, name + "\n" + vector.toString());
 	}
 }

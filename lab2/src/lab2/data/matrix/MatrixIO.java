@@ -23,7 +23,7 @@ public class MatrixIO {
 		
 	private Matrix createNew(String name, int size) throws IOException {
 		Matrix MA = Matrix.generateRandom(size);
-		fs.write(inPath, name + "\n" + MA.toString());
+		writeMatrix(name, MA);
 		return MA;
 	}
 
@@ -40,7 +40,7 @@ public class MatrixIO {
 		return Matrix.generateFromString(df.findMatrix(contents, name, size));
 	}
 	
-	public void writeResult(String name, String result) throws IOException {
-		fs.write(outPath, name + "\n" + result);
+	public void writeMatrix(String name, Matrix matrix) throws IOException {
+		fs.write(outPath, name + "\n" + matrix.toString());
 	}
 }

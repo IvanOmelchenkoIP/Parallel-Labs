@@ -42,13 +42,12 @@ public class F1 implements Runnable {
 			return;
 		}		
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
-		String result = MA.toString();
 		try {
 			semaphore.acquire();
 			System.out.println("F1");
-			System.out.println(result);
+			System.out.println(MA.toString());
 			try {
-				mio.writeResult("MA", result);
+				mio.writeMatrix("MA", MA);
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}

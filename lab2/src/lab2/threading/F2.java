@@ -44,13 +44,12 @@ public class F2 implements Runnable {
 			return;
 		}		
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
-		String result = A.toString();
 		try {
 			semaphore.acquire();
 			System.out.println("F2");
-			System.out.println(result);
+			System.out.println(A.toString());
 			try {
-				vio.writeResult("A", result);
+				vio.writeVector("A", A);
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}
