@@ -43,7 +43,8 @@ public class F1 implements Runnable {
 		}		
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
 		String result = MA.toString();
-		synchronized(this) {
+		try {
+			semaphore.acquire();
 			System.out.println("F1");
 			System.out.println(result);
 			try {
@@ -51,8 +52,11 @@ public class F1 implements Runnable {
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}
+		} catch (InterruptedException ex) {
+			System.out.println("Роботу потоку F1 було перервано - " + ex);
+		} finally {
+			semaphore.release();
 			countDownLatch.countDown();
-			return;
 		}
 	}
 

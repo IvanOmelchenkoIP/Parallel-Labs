@@ -45,7 +45,8 @@ public class F2 implements Runnable {
 		}		
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
 		String result = A.toString();
-		synchronized(this) {
+		try {
+			semaphore.acquire();
 			System.out.println("F2");
 			System.out.println(result);
 			try {
@@ -53,9 +54,12 @@ public class F2 implements Runnable {
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}
+		} catch (InterruptedException ex) {
+			System.out.println("Роботу потоку F2 було перервано - " + ex);
+		} finally {
+			semaphore.release();
 			countDownLatch.countDown();
-			return;
-		}
+		}		
 	}
 
 }
