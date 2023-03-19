@@ -2,40 +2,25 @@
 
 package lab2.data.vector;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import lab2.data.matrix.Matrix;
-import lab2.data.*;
+import lab2.data.KahanSum;
 
 public class Vector {
-
-	final private static int MIN_VAL = 0;
-	final private static int MAX_VAL = 100;
-	final private static int MIN_PRECISION = 3;
-	final private static int MAX_PRECISION = 15;
 	
 	final private int size;
 	final private double[] valueA;
 	
-	private Vector(int size, double[] valueA) {
+	public Vector(int size, double[] valueA) {
 		this.size = size;
 		this.valueA = valueA;
 	}
 	
-	public static Vector generateFromString(String str) {
+	public static Vector fromString(String str) {
 		String[] elements = str.trim().split(" ");
 		int size = elements.length;
 		final double[] valueA = new double[size];
 		for (int i = 0; i < size; i++) {
 			valueA[i] = Double.parseDouble(elements[i]);
-		}
-		return new Vector(size, valueA);
-	}
-	
-	public static Vector generateRandom(int size) {
-		final double[] valueA = new double[size];
-		for (int i = 0; i < size; i++) {
-			valueA[i] = DoublePrecisionGenerator.generateDoubleWithPrecison(MIN_VAL, MAX_VAL, ThreadLocalRandom.current().nextInt(MIN_PRECISION, MAX_PRECISION));
 		}
 		return new Vector(size, valueA);
 	}

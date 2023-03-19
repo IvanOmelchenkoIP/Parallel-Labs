@@ -13,6 +13,11 @@ import lab2.threading.F2;
 public class Lab2 {
 
 	public static void main(String[] args) {
+		final int MIN_VAL = 0;
+		final int MAX_VAL = 100;
+		final int MIN_PRECISION = 3;
+		final int MAX_PRECISION = 15;
+		
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
 		final String OUTPUT_PATH = "../output/output2.txt";
