@@ -18,6 +18,9 @@ public class Lab2 {
 		final int MIN_PRECISION = 3;
 		final int MAX_PRECISION = 15;
 		
+		//VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
+		//MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
+
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
 		final String OUTPUT_PATH = "../output/output2.txt";

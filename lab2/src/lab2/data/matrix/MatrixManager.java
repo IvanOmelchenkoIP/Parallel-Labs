@@ -1,14 +1,17 @@
-// ./lab2/src/lab2/data/matrix/MatrixIO.java
+// ./lab2/src/lab2/data/matrix/MatrixManager.java
 
 package lab2.data.matrix;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import lab2.data.DataFinder;
 import lab2.data.generators.DoubleArrayGenerator;
 import lab2.fs.MemFileSystem;
 
-public class MatrixIO {
+public class MatrixManager {
+	
+	final private HashMap<String, Matrix> matrixes = new HashMap<String, Matrix>();
 	
 	final private String inPath;
 	final private String outPath;
@@ -16,7 +19,7 @@ public class MatrixIO {
 	final private DataFinder df;
 	final private DoubleArrayGenerator dg;
 	
-	public MatrixIO(String inPath, String outPath) {
+	public MatrixManager(String inPath, String outPath) {
 		this.inPath = inPath;
 		this.outPath = outPath;
 		this.fs = new MemFileSystem();
@@ -29,18 +32,28 @@ public class MatrixIO {
 		writeMatrix(name, MA);
 		return MA;
 	}
-
-	public Matrix generateOrRead(String name, int size) throws IOException {
-		if (!fs.exists(inPath)) {
-			return createNew(name, size);
-		}
-		
+	
+	private Matrix getFromFile(String name, int size) throws IOException {
 		String contents = fs.read(inPath).trim();
 		if (!contents.contains(name + "\n")) {
-			return createNew(name, size);
+			return null;
 		}
-		
 		return Matrix.fromString(df.findMatrix(contents, name, size));
+	}
+
+	public Matrix getMatrix(String name, int size) throws IOException {
+		Matrix MA = matrixes.get(name);
+		if (MA != null) {
+			return MA;
+		}
+		if (fs.exists(inPath)) {
+			MA = getFromFile(name, size);
+		}
+		if (MA == null) {
+			MA = createNew(name, size);
+		}
+		matrixes.put(name, MA);
+		return MA;
 	}
 	
 	public void writeMatrix(String name, Matrix matrix) throws IOException {

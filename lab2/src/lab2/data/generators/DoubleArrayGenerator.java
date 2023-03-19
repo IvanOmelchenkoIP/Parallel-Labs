@@ -1,3 +1,5 @@
+// ./lab2/src/lab2/data/generators/DoubleArrayGenerator.java
+
 package lab2.data.generators;
 
 import java.util.concurrent.ThreadLocalRandom;

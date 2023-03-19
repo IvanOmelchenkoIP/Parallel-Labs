@@ -1,14 +1,17 @@
-// ./lab2/src/lab2/data/vector/VectorIO.java
+// ./lab2/src/lab2/data/vector/VectorManager.java
 
 package lab2.data.vector;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import lab2.data.DataFinder;
 import lab2.data.generators.DoubleArrayGenerator;
 import lab2.fs.MemFileSystem;
 
-public class VectorIO {
+public class VectorManager {
+	
+	final private HashMap<String, Vector> vectors = new HashMap<String, Vector>();
 
 	final private String inPath;
 	final private String outPath;
@@ -16,7 +19,7 @@ public class VectorIO {
 	final private DataFinder df;
 	final private DoubleArrayGenerator dg;
 	
-	public VectorIO(String inPath, String outPath) {
+	public VectorManager(String inPath, String outPath) {
 		this.inPath = inPath;
 		this.outPath = outPath;
 		this.fs = new MemFileSystem();
@@ -29,18 +32,27 @@ public class VectorIO {
 		writeVector(name, A);
 		return A;
 	}
-
-	public Vector generateOrRead(String name, int size) throws IOException {
-		if (!fs.exists(inPath)) {
-			return createNew(name, size);
-		}
-		
+	
+	private Vector readFromFile(String name, int size) throws IOException {
 		String contents = fs.read(inPath).trim();
 		if (!contents.contains(name + "\n")) {
-			return createNew(name, size);
+			return null;
 		}
 		
 		return Vector.fromString(df.findVector(contents, name));
+	}
+
+	public Vector getVector(String name, int size) throws IOException {
+		Vector A = vectors.get(name);
+		if (A != null) {
+			return A;
+		}
+		if (fs.exists(inPath)) {
+			A = readFromFile(name, size);
+		}
+		A = createNew(name, size);
+		vectors.put(name, A);
+		return A;
 	}
 	
 	public void writeVector(String name, Vector vector) throws IOException {

@@ -1,4 +1,4 @@
-// ./lab2/src/lab2/data/DoublePrecisionGenerator.java
+// ./lab2/src/lab2/data/generators/DoublePrecisionGenerator.java
 
 package lab2.data.generators;
 

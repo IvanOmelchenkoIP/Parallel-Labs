@@ -8,15 +8,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 import lab2.data.matrix.Matrix;
-import lab2.data.matrix.MatrixIO;
+import lab2.data.matrix.MatrixManager;
 import lab2.data.vector.Vector;
-import lab2.data.vector.VectorIO;
+import lab2.data.vector.VectorManager;
 
 public class F2 implements Runnable {
 
 	final private int N;
-	final private MatrixIO mio;
-	final private VectorIO vio;
+	final private MatrixManager mio;
+	final private VectorManager vio;
 	private final Semaphore semaphore;
 	private final CountDownLatch countDownLatch;
 	
@@ -24,8 +24,8 @@ public class F2 implements Runnable {
 		this.N = N;
 		this.semaphore = semaphore;
 		this.countDownLatch = countDownLatch;
-		this.mio = new MatrixIO(inPath, outPath);
-		this.vio = new VectorIO(inPath, outPath);
+		this.mio = new MatrixManager(inPath, outPath);
+		this.vio = new VectorManager(inPath, outPath);
 	}
 	
 	@Override
