@@ -15,17 +15,17 @@ import lab2.data.vector.VectorManager;
 public class F2 implements Runnable {
 
 	final private int N;
-	final private MatrixManager mio;
-	final private VectorManager vio;
+	final private MatrixManager mm;
+	final private VectorManager vm;
 	private final Semaphore semaphore;
 	private final CountDownLatch countDownLatch;
 	
-	public F2(int N, String inPath, String outPath, Semaphore semaphore, CountDownLatch countDownLatch) {
+	public F2(int N, MatrixManager mm, VectorManager vm, Semaphore semaphore, CountDownLatch countDownLatch) {
 		this.N = N;
 		this.semaphore = semaphore;
 		this.countDownLatch = countDownLatch;
-		this.mio = new MatrixManager(inPath, outPath);
-		this.vio = new VectorManager(inPath, outPath);
+		this.mm = mm;
+		this.vm = vm;
 	}
 	
 	@Override
@@ -33,9 +33,9 @@ public class F2 implements Runnable {
 		Vector D, B;
 		Matrix MT;
 		try {
-			D = vio.generateOrRead("D", N);
-			B = vio.generateOrRead("B", N);
-			MT = mio.generateOrRead("MT", N);
+			D = vm.getVector("D", N);
+			B = vm.getVector("B", N);
+			MT = mm.getMatrix("MT", N);
 		} catch (IOException ex) {
 			System.out.println("Неможливо виконати обчислення - " + ex);
 			return;
@@ -49,7 +49,7 @@ public class F2 implements Runnable {
 			System.out.println("F2");
 			System.out.println(A.toString());
 			try {
-				vio.writeVector("A", A);
+				vm.writeToFile(mm.getOutPath(), "A", A);
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}

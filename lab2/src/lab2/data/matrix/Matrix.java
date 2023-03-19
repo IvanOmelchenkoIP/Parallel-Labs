@@ -74,7 +74,7 @@ public class Matrix {
 		double[][] valueMC = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				valueMC[i][j] = valueMA[i][j] - valueMB[i][j] * (-1);
+				valueMC[i][j] = valueMA[i][j] - valueMB[i][j];
 			}
 		}
 		return new Matrix(size, valueMC);

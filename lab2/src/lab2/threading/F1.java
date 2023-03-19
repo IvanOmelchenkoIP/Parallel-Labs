@@ -13,26 +13,26 @@ import lab2.data.matrix.MatrixManager;
 public class F1 implements Runnable {
 
 	final private int N;
-	final private MatrixManager mio;
+	final private MatrixManager mm;
 	private final Semaphore semaphore;
 	private final CountDownLatch countDownLatch;
 	
-	public F1(int N, String inPath, String outPath, Semaphore semaphore, CountDownLatch countDownLatch) {
+	public F1(int N, MatrixManager mm, Semaphore semaphore, CountDownLatch countDownLatch) {
 		this.N = N;
 		this.semaphore = semaphore;
 		this.countDownLatch = countDownLatch;
-		this.mio = new MatrixManager(inPath, outPath);
+		this.mm = mm;
 	}
 	
 	@Override
 	public void run() {		
 		Matrix MD, MT, MZ, ME, MM;
 		try {
-			MD = mio.generateOrRead("MD", N);
-			MT = mio.generateOrRead("MT", N);
-			MZ = mio.generateOrRead("MZ", N);
-			ME = mio.generateOrRead("ME", N);
-			MM = mio.generateOrRead("MM", N);
+			MD = mm.getMatrix("MD", N);
+			MT = mm.getMatrix("MT", N);
+			MZ = mm.getMatrix("MZ", N);
+			ME = mm.getMatrix("ME", N);
+			MM = mm.getMatrix("MM", N);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			System.out.println("Неможливо виконати обчислення - " + ex);
@@ -47,7 +47,7 @@ public class F1 implements Runnable {
 			System.out.println("F1");
 			System.out.println(MA.toString());
 			try {
-				mio.writeMatrix("MA", MA);
+				mm.writeToFile(mm.getOutPath(), "MA", MA);
 			} catch (IOException ex) {
 				System.out.println("Помилка при записі результату у файл - " + ex);
 			}

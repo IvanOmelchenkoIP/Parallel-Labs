@@ -14,26 +14,41 @@ public class MatrixManager {
 	
 	final private Semaphore accessSemaphore;
 	
-	final private HashMap<String, Matrix> matrixes = new HashMap<String, Matrix>();
+	final private HashMap<String, Matrix> matrixes;
+	
+	final private int minVal;
+	final private int maxVal;
+	final private int minPrecision;
+	final private int maxPrecision;
 	
 	final private String inPath;
 	final private String outPath;
 	final private MemFileSystem fs;
+	
 	final private DataFinder df;
 	final private DoubleArrayGenerator dg;
 	
-	public MatrixManager(String inPath, String outPath) {
+	public MatrixManager(int minVal, int maxVal, int minPrecision, int maxPrecision, String inPath, String outPath) {
+		this.accessSemaphore = new Semaphore(1);
+
+		this.matrixes = new HashMap<String, Matrix>();
+		
+		this.minVal = minVal;
+		this.maxVal = maxVal;
+		this.minPrecision = minPrecision;
+		this.maxPrecision = maxPrecision;
+		
 		this.inPath = inPath;
 		this.outPath = outPath;
+		
 		this.fs = new MemFileSystem();
 		this.df = new DataFinder();
 		this.dg = new DoubleArrayGenerator();
-		this.accessSemaphore = new Semaphore(1);
 	}
 		
 	private Matrix createNew(String name, int size) throws IOException {
-		Matrix MA = new Matrix(size, dg.generate2DDoubleArray(size, 0, 100, 3, 15));
-		writeMatrix(name, MA);
+		Matrix MA = new Matrix(size, dg.generate2DDoubleArray(size, minVal, maxVal, minPrecision, maxPrecision));
+		writeToFile(inPath, name, MA);
 		return MA;
 	}
 	
@@ -45,7 +60,7 @@ public class MatrixManager {
 		return Matrix.fromString(df.findMatrix(contents, name, size));
 	}
 
-	public Matrix getMatrix(String name, int size) throws IOException, InterruptedException {
+	public Matrix getMatrix(String name, int size) throws InterruptedException, IOException  {
 		accessSemaphore.acquire();
 		
 		Matrix MA = matrixes.get(name);
@@ -65,7 +80,11 @@ public class MatrixManager {
 		return MA;
 	}
 	
-	public void writeMatrix(String name, Matrix matrix) throws IOException {
-		fs.write(outPath, name + "\n" + matrix.toString());
+	public void writeToFile(String filepath, String name, Matrix matrix) throws IOException {
+		fs.write(filepath, name + "\n" + matrix.toString());
+	}
+	
+	public String getOutPath() {
+		return outPath;
 	}
 }

@@ -14,26 +14,41 @@ public class VectorManager {
 	
 	final private Semaphore accessSemaphore;
 	
-	final private HashMap<String, Vector> vectors = new HashMap<String, Vector>();
+	final private HashMap<String, Vector> vectors;
+	
+	final private int minVal;
+	final private int maxVal;
+	final private int minPrecision;
+	final private int maxPrecision;
 
 	final private String inPath;
 	final private String outPath;
+	
 	final private MemFileSystem fs;
 	final private DataFinder df;
 	final private DoubleArrayGenerator dg;
 	
-	public VectorManager(String inPath, String outPath) {
+	public VectorManager(int minVal, int maxVal, int minPrecision, int maxPrecision, String inPath, String outPath) {		
+		this.accessSemaphore = new Semaphore(1);
+		
+		this.vectors = new HashMap<String, Vector>();
+		
+		this.minVal = minVal;
+		this.maxVal = maxVal;
+		this.minPrecision = minPrecision;
+		this.maxPrecision = maxPrecision;
+		
 		this.inPath = inPath;
 		this.outPath = outPath;
+		
 		this.fs = new MemFileSystem();
 		this.df = new DataFinder();
 		this.dg = new DoubleArrayGenerator();
-		this.accessSemaphore = new Semaphore(1);
 	}
 	
 	private Vector createNew(String name, int size) throws IOException {
-		Vector A = new Vector(size, dg.generateDoubleArray(size, 0, 100, 3, 15));
-		writeVector(name, A);
+		Vector A = new Vector(size, dg.generateDoubleArray(size, minVal, maxVal, minPrecision, maxPrecision));
+		writeToFile(inPath, name, A);
 		return A;
 	}
 	
@@ -42,11 +57,10 @@ public class VectorManager {
 		if (!contents.contains(name + "\n")) {
 			return null;
 		}
-		
 		return Vector.fromString(df.findVector(contents, name));
 	}
 
-	public Vector getVector(String name, int size) throws IOException, InterruptedException {
+	public Vector getVector(String name, int size) throws InterruptedException, IOException  {
 		accessSemaphore.acquire();
 		
 		Vector A = vectors.get(name);
@@ -56,7 +70,9 @@ public class VectorManager {
 		if (fs.exists(inPath)) {
 			A = readFromFile(name, size);
 		}
-		A = createNew(name, size);
+		if (A == null) {
+			A = createNew(name, size);
+		}
 		vectors.put(name, A);
 		
 		accessSemaphore.release();
@@ -64,7 +80,11 @@ public class VectorManager {
 		return A;
 	}
 	
-	public void writeVector(String name, Vector vector) throws IOException {
-		fs.write(outPath, name + "\n" + vector.toString());
+	public void writeToFile(String filepath, String name, Vector vector) throws IOException {
+		fs.write(filepath, name + "\n" + vector.toString());
+	}
+	
+	public String getOutputPath() {
+		return outPath;
 	}
 }
