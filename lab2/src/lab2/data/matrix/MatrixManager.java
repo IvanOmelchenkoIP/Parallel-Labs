@@ -4,12 +4,15 @@ package lab2.data.matrix;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.Semaphore;
 
 import lab2.data.DataFinder;
 import lab2.data.generators.DoubleArrayGenerator;
 import lab2.fs.MemFileSystem;
 
 public class MatrixManager {
+	
+	final private Semaphore accessSemaphore;
 	
 	final private HashMap<String, Matrix> matrixes = new HashMap<String, Matrix>();
 	
@@ -25,6 +28,7 @@ public class MatrixManager {
 		this.fs = new MemFileSystem();
 		this.df = new DataFinder();
 		this.dg = new DoubleArrayGenerator();
+		this.accessSemaphore = new Semaphore(1);
 	}
 		
 	private Matrix createNew(String name, int size) throws IOException {
@@ -41,7 +45,9 @@ public class MatrixManager {
 		return Matrix.fromString(df.findMatrix(contents, name, size));
 	}
 
-	public Matrix getMatrix(String name, int size) throws IOException {
+	public Matrix getMatrix(String name, int size) throws IOException, InterruptedException {
+		accessSemaphore.acquire();
+		
 		Matrix MA = matrixes.get(name);
 		if (MA != null) {
 			return MA;
@@ -53,6 +59,9 @@ public class MatrixManager {
 			MA = createNew(name, size);
 		}
 		matrixes.put(name, MA);
+		
+		accessSemaphore.release();
+		
 		return MA;
 	}
 	

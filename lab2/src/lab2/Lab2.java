@@ -21,7 +21,7 @@ public class Lab2 {
 		//VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		//MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 
-		final int N = 100;
+		final int SIZE = 100;
 		final String INPUT_PATH = "../input/input.txt";
 		final String OUTPUT_PATH = "../output/output2.txt";
 		
@@ -32,8 +32,8 @@ public class Lab2 {
 
 		FileSystem fs = new FileSystem();
 		long start = System.currentTimeMillis();
-		Thread t1 = new Thread(new F1(N, INPUT_PATH, OUTPUT_PATH, semaphore, countDownLatch));
-		Thread t2 = new Thread(new F2(N, INPUT_PATH, OUTPUT_PATH, semaphore, countDownLatch));
+		Thread t1 = new Thread(new F1(SIZE, INPUT_PATH, OUTPUT_PATH, semaphore, countDownLatch));
+		Thread t2 = new Thread(new F2(SIZE, INPUT_PATH, OUTPUT_PATH, semaphore, countDownLatch));
 		t1.start();
 		t2.start();
 		try {
