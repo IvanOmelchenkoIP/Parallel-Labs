@@ -36,13 +36,19 @@ public class F2 implements Runnable {
 			D = vm.getVector("D", N);
 			B = vm.getVector("B", N);
 			MT = mm.getMatrix("MT", N);
+		} catch (InterruptedException ex) {
+			System.out.println("Неможливо продовжити роботу потоку F2 (потік було перервано) - " + ex);
+			countDownLatch.countDown();
+			return;
 		} catch (IOException ex) {
-			System.out.println("Неможливо виконати обчислення - " + ex);
+			System.out.println("Неможливо продовжити роботу потоку F2 (помилка файлової системи) - " + ex);
+			countDownLatch.countDown();
 			return;
 		} catch (Exception ex) {
-			System.out.println("Неможливо виконати обчислення - " + ex);
+			System.out.println("Неможливо продовжити роботу потоку F2 - " + ex);
+			countDownLatch.countDown();
 			return;
-		}		
+		}	
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
 		try {
 			semaphore.acquire();
@@ -51,14 +57,13 @@ public class F2 implements Runnable {
 			try {
 				vm.writeToFile(mm.getOutPath(), "A", A);
 			} catch (IOException ex) {
-				System.out.println("Помилка при записі результату у файл - " + ex);
+				System.out.println("Неможливо продовжити роботу потоку F2 (помилка при записі результату у файл) - " + ex);
 			}
 		} catch (InterruptedException ex) {
-			System.out.println("Роботу потоку F2 було перервано - " + ex);
+			System.out.println("Неможливо продовжити роботу потоку F2 (потік було перервано) - " + ex);
 		} finally {
 			semaphore.release();
 			countDownLatch.countDown();
 		}		
 	}
-
 }

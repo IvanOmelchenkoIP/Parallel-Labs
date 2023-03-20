@@ -61,23 +61,24 @@ public class VectorManager {
 	}
 
 	public Vector getVector(String name, int size) throws InterruptedException, IOException  {
-		accessSemaphore.acquire();
-		
-		Vector A = vectors.get(name);
-		if (A != null) {
+		try {
+			accessSemaphore.acquire();
+			
+			Vector A = vectors.get(name);
+			if (A != null) {
+				return A;
+			}
+			if (fs.exists(inPath)) {
+				A = readFromFile(name, size);
+			}
+			if (A == null) {
+				A = createNew(name, size);
+			}
+			vectors.put(name, A);
 			return A;
+		} finally {
+			accessSemaphore.release();
 		}
-		if (fs.exists(inPath)) {
-			A = readFromFile(name, size);
-		}
-		if (A == null) {
-			A = createNew(name, size);
-		}
-		vectors.put(name, A);
-		
-		accessSemaphore.release();
-		
-		return A;
 	}
 	
 	public void writeToFile(String filepath, String name, Vector vector) throws IOException {

@@ -61,23 +61,24 @@ public class MatrixManager {
 	}
 
 	public Matrix getMatrix(String name, int size) throws InterruptedException, IOException  {
-		accessSemaphore.acquire();
-		
-		Matrix MA = matrixes.get(name);
-		if (MA != null) {
+		try {
+			accessSemaphore.acquire();
+			
+			Matrix MA = matrixes.get(name);
+			if (MA != null) {
+				return MA;
+			}
+			if (fs.exists(inPath)) {
+				MA = getFromFile(name, size);
+			}
+			if (MA == null) {
+				MA = createNew(name, size);
+			}
+			matrixes.put(name, MA);
 			return MA;
+		} finally {
+			accessSemaphore.release();
 		}
-		if (fs.exists(inPath)) {
-			MA = getFromFile(name, size);
-		}
-		if (MA == null) {
-			MA = createNew(name, size);
-		}
-		matrixes.put(name, MA);
-		
-		accessSemaphore.release();
-		
-		return MA;
 	}
 	
 	public void writeToFile(String filepath, String name, Matrix matrix) throws IOException {

@@ -33,8 +33,8 @@ public class Lab2 {
 		Semaphore semaphore = new Semaphore(ALLOWED_THREADS);
 		CountDownLatch countDownLatch = new CountDownLatch(THREAD_AMOUNT);
 
-		FileSystem fs = new FileSystem();
 		long start = System.currentTimeMillis();
+		
 		Thread t1 = new Thread(new F1(N, mm, semaphore, countDownLatch));
 		Thread t2 = new Thread(new F2(N, mm, vm, semaphore, countDownLatch));
 		t1.start();
@@ -44,8 +44,10 @@ public class Lab2 {
 		} catch (InterruptedException ex) {
 			System.out.println("Роботу дного з потоків перервано некоректно - " + ex);
 		}
+		
 		long ms = System.currentTimeMillis() - start;
 		String msMessage = "Час виконання: " + ms + " мс";
+		FileSystem fs = new FileSystem();
 		try {
 			fs.write(OUTPUT_PATH, msMessage + "\n\n");
 		} catch (IOException ex) {
