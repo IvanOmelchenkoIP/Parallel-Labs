@@ -33,12 +33,17 @@ public class F1 implements Runnable {
 			MZ = mm.getMatrix("MZ", N);
 			ME = mm.getMatrix("ME", N);
 			MM = mm.getMatrix("MM", N);
+		} catch (InterruptedException ex) {
+			System.out.println("Неможливо продовжити роботу потоку F1 (потік було перервано) - " + ex);
+			countDownLatch.countDown();
+			return;
 		} catch (IOException ex) {
-			ex.printStackTrace();
-			System.out.println("Неможливо виконати обчислення - " + ex);
+			System.out.println("Неможливо продовжити роботу потоку F1 (помилка файлової системи) - " + ex);
+			countDownLatch.countDown();
 			return;
 		} catch (Exception ex) {
-			System.out.println("Неможливо виконати обчислення - " + ex);
+			System.out.println("Неможливо продовжити роботу потоку F1 - " + ex);
+			countDownLatch.countDown();
 			return;
 		}		
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
@@ -49,14 +54,13 @@ public class F1 implements Runnable {
 			try {
 				mm.writeToFile(mm.getOutPath(), "MA", MA);
 			} catch (IOException ex) {
-				System.out.println("Помилка при записі результату у файл - " + ex);
+				System.out.println("Неможливо продовжити роботу потоку F1 (помилка при записі результату у файл) - " + ex);
 			}
 		} catch (InterruptedException ex) {
-			System.out.println("Роботу потоку F1 було перервано - " + ex);
+			System.out.println("Неможливо продовжити роботу потоку F1 (потік було перервано) - " + ex);
 		} finally {
 			semaphore.release();
 			countDownLatch.countDown();
 		}
 	}
-
 }
