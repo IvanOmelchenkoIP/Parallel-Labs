@@ -6,6 +6,7 @@ package lab4.threading;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
 
 import lab4.data.matrix.Matrix;
 import lab4.data.matrix.MatrixManager;
@@ -17,12 +18,12 @@ public class F2 implements Runnable {
 	final private int N;
 	final private MatrixManager mm;
 	final private VectorManager vm;
-	private final Semaphore semaphore;
+	private final Lock lock;
 	private final CountDownLatch countDownLatch;
 	
-	public F2(int N, MatrixManager mm, VectorManager vm, Semaphore semaphore, CountDownLatch countDownLatch) {
+	public F2(int N, MatrixManager mm, VectorManager vm, Lock lock, CountDownLatch countDownLatch) {
 		this.N = N;
-		this.semaphore = semaphore;
+		this.lock = lock;
 		this.countDownLatch = countDownLatch;
 		this.mm = mm;
 		this.vm = vm;
@@ -36,10 +37,6 @@ public class F2 implements Runnable {
 			D = vm.getVector("D", N);
 			B = vm.getVector("B", N);
 			MT = mm.getMatrix("MT", N);
-		} catch (InterruptedException ex) {
-			System.out.println("Неможливо продовжити роботу потоку F2 (потік було перервано) - " + ex);
-			countDownLatch.countDown();
-			return;
 		} catch (IOException ex) {
 			System.out.println("Неможливо продовжити роботу потоку F2 (помилка файлової системи) - " + ex);
 			countDownLatch.countDown();
@@ -51,7 +48,7 @@ public class F2 implements Runnable {
 		}		
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
 		try {
-			semaphore.acquire();
+			lock.lock();
 			System.out.println("F2");
 			System.out.println(A.toString());
 			try {
@@ -59,10 +56,8 @@ public class F2 implements Runnable {
 			} catch (IOException ex) {
 				System.out.println("Неможливо продовжити роботу потоку F2 (помилка при записі результату у файл) - " + ex);
 			}
-		} catch (InterruptedException ex) {
-			System.out.println("Неможливо продовжити роботу потоку F2 (потік було перервано) - " + ex);
 		} finally {
-			semaphore.release();
+			lock.unlock();
 			countDownLatch.countDown();
 		}	
 	}

@@ -6,6 +6,7 @@ package lab4.threading;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
 
 import lab4.data.matrix.Matrix;
 import lab4.data.matrix.MatrixManager;
@@ -14,12 +15,12 @@ public class F1 implements Runnable {
 
 	final private int N;
 	final private MatrixManager mm;
-	private final Semaphore semaphore;
+	private final Lock lock;
 	private final CountDownLatch countDownLatch;
 	
-	public F1(int N, MatrixManager mm, Semaphore semaphore, CountDownLatch countDownLatch) {
+	public F1(int N, MatrixManager mm, Lock lock, CountDownLatch countDownLatch) {
 		this.N = N;
-		this.semaphore = semaphore;
+		this.lock = lock;
 		this.countDownLatch = countDownLatch;
 		this.mm = mm;
 	}
@@ -33,10 +34,6 @@ public class F1 implements Runnable {
 			MZ = mm.getMatrix("MZ", N);
 			ME = mm.getMatrix("ME", N);
 			MM = mm.getMatrix("MM", N);
-		} catch (InterruptedException ex) {
-			System.out.println("Неможливо продовжити роботу потоку F1 (потік було перервано) - " + ex);
-			countDownLatch.countDown();
-			return;
 		} catch (IOException ex) {
 			System.out.println("Неможливо продовжити роботу потоку F1 (помилка файлової системи) - " + ex);
 			countDownLatch.countDown();
@@ -48,7 +45,7 @@ public class F1 implements Runnable {
 		}		
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
 		try {
-			semaphore.acquire();
+			lock.lock();
 			System.out.println("F1");
 			System.out.println(MA.toString());
 			try {
@@ -56,10 +53,8 @@ public class F1 implements Runnable {
 			} catch (IOException ex) {
 				System.out.println("Неможливо продовжити роботу потоку F1 (помилка при записі результату у файл) - " + ex);
 			}
-		} catch (InterruptedException ex) {
-			System.out.println("Неможливо продовжити роботу потоку F1 (потік було перервано) - " + ex);
 		} finally {
-			semaphore.release();
+			lock.unlock();
 			countDownLatch.countDown();
 		}
 	}

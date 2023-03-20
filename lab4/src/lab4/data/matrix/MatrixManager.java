@@ -62,7 +62,7 @@ public class MatrixManager {
 		return Matrix.fromString(df.findMatrix(contents, name, size));
 	}
 
-	public Matrix getMatrix(String name, int size) throws InterruptedException, IOException  {
+	public Matrix getMatrix(String name, int size) throws IOException  {
 		try {
 			accessLock.lock();
 			

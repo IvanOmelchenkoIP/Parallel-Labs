@@ -7,6 +7,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import lab4.data.matrix.MatrixManager;
 import lab4.data.vector.VectorManager;
@@ -28,18 +30,17 @@ public class Lab4 {
 		VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		
-		final int ALLOWED_THREADS = 1;
 		final int THREAD_AMOUNT = 2;
 		
-		Semaphore semaphore = new Semaphore(ALLOWED_THREADS);
+		Lock lock = new ReentrantLock();
 		CountDownLatch countDownLatch = new CountDownLatch(THREAD_AMOUNT);
 		
 		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
 		
 		long start = System.currentTimeMillis();
 		
-		execService.execute(new F1(N, mm, semaphore, countDownLatch));
-		execService.execute(new F2(N, mm, vm, semaphore, countDownLatch));
+		execService.execute(new F1(N, mm, lock, countDownLatch));
+		execService.execute(new F2(N, mm, vm, lock, countDownLatch));
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ex) {

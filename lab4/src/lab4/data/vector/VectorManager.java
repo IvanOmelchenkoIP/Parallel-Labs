@@ -62,7 +62,7 @@ public class VectorManager {
 		return Vector.fromString(df.findVector(contents, name));
 	}
 
-	public Vector getVector(String name, int size) throws InterruptedException, IOException  {
+	public Vector getVector(String name, int size) throws IOException  {
 		try {
 			accessLock.lock();
 			
