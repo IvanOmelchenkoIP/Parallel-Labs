@@ -5,6 +5,8 @@ package lab4.data.matrix;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import lab4.data.DataFinder;
 import lab4.data.generators.DoubleArrayGenerator;
@@ -12,7 +14,7 @@ import lab4.fs.MemFileSystem;
 
 public class MatrixManager {
 	
-	final private Semaphore accessSemaphore;
+	final private Lock accessLock;
 	
 	final private HashMap<String, Matrix> matrixes;
 	
@@ -29,7 +31,7 @@ public class MatrixManager {
 	final private DoubleArrayGenerator dg;
 	
 	public MatrixManager(int minVal, int maxVal, int minPrecision, int maxPrecision, String inPath, String outPath) {
-		this.accessSemaphore = new Semaphore(1);
+		this.accessLock = new ReentrantLock();
 
 		this.matrixes = new HashMap<String, Matrix>();
 		
@@ -62,7 +64,7 @@ public class MatrixManager {
 
 	public Matrix getMatrix(String name, int size) throws InterruptedException, IOException  {
 		try {
-			accessSemaphore.acquire();
+			accessLock.lock();
 			
 			Matrix MA = matrixes.get(name);
 			if (MA != null) {
@@ -77,7 +79,7 @@ public class MatrixManager {
 			matrixes.put(name, MA);
 			return MA;
 		} finally {
-			accessSemaphore.release();
+			accessLock.unlock();
 		}
 	}
 	

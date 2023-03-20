@@ -5,6 +5,8 @@ package lab4.data.vector;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import lab4.data.DataFinder;
 import lab4.data.generators.DoubleArrayGenerator;
@@ -12,7 +14,7 @@ import lab4.fs.MemFileSystem;
 
 public class VectorManager {
 	
-	final private Semaphore accessSemaphore;
+	final private Lock accessLock;
 	
 	final private HashMap<String, Vector> vectors;
 	
@@ -29,7 +31,7 @@ public class VectorManager {
 	final private DoubleArrayGenerator dg;
 	
 	public VectorManager(int minVal, int maxVal, int minPrecision, int maxPrecision, String inPath, String outPath) {		
-		this.accessSemaphore = new Semaphore(1);
+		this.accessLock = new ReentrantLock();
 		
 		this.vectors = new HashMap<String, Vector>();
 		
@@ -62,7 +64,7 @@ public class VectorManager {
 
 	public Vector getVector(String name, int size) throws InterruptedException, IOException  {
 		try {
-			accessSemaphore.acquire();
+			accessLock.lock();
 			
 			Vector A = vectors.get(name);
 			if (A != null) {
@@ -77,7 +79,7 @@ public class VectorManager {
 			vectors.put(name, A);
 			return A;
 		} finally {
-			accessSemaphore.release();
+			accessLock.unlock();
 		}
 	}
 	
