@@ -4,6 +4,8 @@ package lab3;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 import lab3.data.matrix.MatrixManager;
@@ -22,7 +24,7 @@ public class Lab3 {
 		
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
-		final String OUTPUT_PATH = "../output/output2.txt";
+		final String OUTPUT_PATH = "../output/output3.txt";
 		
 		VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
@@ -34,16 +36,19 @@ public class Lab3 {
 		CountDownLatch countDownLatch = new CountDownLatch(THREAD_AMOUNT);
 
 		FileSystem fs = new FileSystem();
+		
+		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
+		
 		long start = System.currentTimeMillis();
-		Thread t1 = new Thread(new F1(N, mm, semaphore, countDownLatch));
-		Thread t2 = new Thread(new F2(N, mm, vm, semaphore, countDownLatch));
-		t1.start();
-		t2.start();
+		
+		execService.execute(new F1(N, mm, semaphore, countDownLatch));
+		execService.execute(new F2(N, mm, vm, semaphore, countDownLatch));
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ex) {
 			System.out.println("Роботу дного з потоків перервано некоректно - " + ex);
 		}
+		
 		long ms = System.currentTimeMillis() - start;
 		String msMessage = "Час виконання: " + ms + " мс";
 		try {
