@@ -21,7 +21,6 @@ public class Lab3 {
 		final int MAX_VAL = 100;
 		final int MIN_PRECISION = 3;
 		final int MAX_PRECISION = 15;
-		
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
 		final String OUTPUT_PATH = "../output/output3.txt";
@@ -34,8 +33,6 @@ public class Lab3 {
 		
 		Semaphore semaphore = new Semaphore(ALLOWED_THREADS);
 		CountDownLatch countDownLatch = new CountDownLatch(THREAD_AMOUNT);
-
-		FileSystem fs = new FileSystem();
 		
 		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
 		
@@ -51,6 +48,7 @@ public class Lab3 {
 		
 		long ms = System.currentTimeMillis() - start;
 		String msMessage = "Час виконання: " + ms + " мс";
+		FileSystem fs = new FileSystem();
 		try {
 			fs.write(OUTPUT_PATH, msMessage + "\n\n");
 		} catch (IOException ex) {

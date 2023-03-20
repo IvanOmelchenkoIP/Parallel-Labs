@@ -62,5 +62,4 @@ public class F2 implements Runnable {
 			countDownLatch.countDown();
 		}	
 	}
-
 }
