@@ -4,33 +4,33 @@
 package lab4.threading;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 
 import lab4.data.matrix.Matrix;
 import lab4.data.matrix.MatrixManager;
 import lab4.data.vector.Vector;
 import lab4.data.vector.VectorManager;
+import lab4.threading.block.CountingThreadBlock;
 
 public class F2 implements Runnable {
 
 	final private int N;
 	final private MatrixManager mm;
 	final private VectorManager vm;
-	private final Lock lock;
-	private final CountDownLatch countDownLatch;
-	
-	public F2(int N, MatrixManager mm, VectorManager vm, Lock lock, CountDownLatch countDownLatch) {
+	private final Lock resLock;
+	private final CountingThreadBlock block;
+
+	public F2(int N, MatrixManager mm, VectorManager vm, Lock resLock, CountingThreadBlock block) {
 		this.N = N;
-		this.lock = lock;
-		this.countDownLatch = countDownLatch;
+		this.resLock = resLock;
+		this.block = block;
 		this.mm = mm;
 		this.vm = vm;
 	}
-	
+
 	@Override
 	public void run() {
+
 		Vector D, B;
 		Matrix MT;
 		try {
@@ -39,16 +39,16 @@ public class F2 implements Runnable {
 			MT = mm.getMatrix("MT", N);
 		} catch (IOException ex) {
 			System.out.println("Неможливо продовжити роботу потоку F2 (помилка файлової системи) - " + ex);
-			countDownLatch.countDown();
+			block.completeTask();
 			return;
 		} catch (Exception ex) {
 			System.out.println("Неможливо продовжити роботу потоку F2 - " + ex);
-			countDownLatch.countDown();
+			block.completeTask();
 			return;
-		}		
+		}
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
 		try {
-			lock.lock();
+			resLock.lock();
 			System.out.println("F2");
 			System.out.println(A.toString());
 			try {
@@ -57,8 +57,8 @@ public class F2 implements Runnable {
 				System.out.println("Неможливо продовжити роботу потоку F2 (помилка при записі результату у файл) - " + ex);
 			}
 		} finally {
-			lock.unlock();
-			countDownLatch.countDown();
-		}	
+			resLock.unlock();
+			block.completeTask();
+		}
 	}
 }

@@ -4,29 +4,28 @@
 package lab4.threading;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 
 import lab4.data.matrix.Matrix;
 import lab4.data.matrix.MatrixManager;
+import lab4.threading.block.CountingThreadBlock;
 
 public class F1 implements Runnable {
 
 	final private int N;
 	final private MatrixManager mm;
-	private final Lock lock;
-	private final CountDownLatch countDownLatch;
-	
-	public F1(int N, MatrixManager mm, Lock lock, CountDownLatch countDownLatch) {
+	private final Lock resLock;
+	private CountingThreadBlock block;
+
+	public F1(int N, MatrixManager mm, Lock resLock, CountingThreadBlock block) {
 		this.N = N;
-		this.lock = lock;
-		this.countDownLatch = countDownLatch;
+		this.resLock = resLock;
+		this.block = block;
 		this.mm = mm;
 	}
-	
+
 	@Override
-	public void run() {		
+	public void run() {
 		Matrix MD, MT, MZ, ME, MM;
 		try {
 			MD = mm.getMatrix("MD", N);
@@ -36,16 +35,16 @@ public class F1 implements Runnable {
 			MM = mm.getMatrix("MM", N);
 		} catch (IOException ex) {
 			System.out.println("Неможливо продовжити роботу потоку F1 (помилка файлової системи) - " + ex);
-			countDownLatch.countDown();
+			block.completeTask();
 			return;
 		} catch (Exception ex) {
 			System.out.println("Неможливо продовжити роботу потоку F1 - " + ex);
-			countDownLatch.countDown();
+			block.completeTask();
 			return;
-		}		
+		}
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
 		try {
-			lock.lock();
+			resLock.lock();
 			System.out.println("F1");
 			System.out.println(MA.toString());
 			try {
@@ -54,8 +53,8 @@ public class F1 implements Runnable {
 				System.out.println("Неможливо продовжити роботу потоку F1 (помилка при записі результату у файл) - " + ex);
 			}
 		} finally {
-			lock.unlock();
-			countDownLatch.countDown();
+			resLock.unlock();
+			block.completeTask();
 		}
 	}
 }

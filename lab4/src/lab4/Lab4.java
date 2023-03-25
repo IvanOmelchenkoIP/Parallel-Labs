@@ -3,10 +3,8 @@
 package lab4;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -15,6 +13,7 @@ import lab4.data.vector.VectorManager;
 import lab4.fs.FileSystem;
 import lab4.threading.F1;
 import lab4.threading.F2;
+import lab4.threading.block.CountingThreadBlock;
 
 public class Lab4 {
 
@@ -25,26 +24,29 @@ public class Lab4 {
 		final int MAX_PRECISION = 15;
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
-		final String OUTPUT_PATH = "../output/output3.txt";
+		final String OUTPUT_PATH = "../output/output4.txt";
 		
 		VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		
 		final int THREAD_AMOUNT = 2;
 		
-		Lock lock = new ReentrantLock();
-		CountDownLatch countDownLatch = new CountDownLatch(THREAD_AMOUNT);
-		
+		Lock resLock = new ReentrantLock();
+		CountingThreadBlock block = new CountingThreadBlock(THREAD_AMOUNT);
+				
 		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
 		
 		long start = System.currentTimeMillis();
 		
-		execService.execute(new F1(N, mm, lock, countDownLatch));
-		execService.execute(new F2(N, mm, vm, lock, countDownLatch));
+		Runnable f1 = new F1(N, mm, resLock, block);
+		Runnable f2 = new F2(N, mm, vm, resLock, block);
+		execService.execute(f1);
+		execService.execute(f2);
+		
 		try {
-			countDownLatch.await();
+			block.waitForAll();
 		} catch (InterruptedException ex) {
-			System.out.println("Роботу дного з потоків перервано некоректно - " + ex);
+			System.out.println("Неможливо продовжити роботу програми - " + ex);
 		}
 		
 		long ms = System.currentTimeMillis() - start;
