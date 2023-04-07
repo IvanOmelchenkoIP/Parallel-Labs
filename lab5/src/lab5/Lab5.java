@@ -3,11 +3,8 @@
 package lab5;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,30 +31,19 @@ public class Lab5 {
 		final int THREAD_AMOUNT = 2;
 		
 		Lock resLock = new ReentrantLock();
-				
-		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
+
+		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_AMOUNT);
 		
 		long start = System.currentTimeMillis();
 		
-		Callable<String> f1 = new F1(N, mm, resLock);
-		Callable<String> f2 = new F2(N, mm, vm, resLock);
-		Future<String> complete1 = execService.submit(f1);
-	    Future<String> complete2 = execService.submit(f2);
+		ForkJoinTask<?> f1 = new F1(N, mm, resLock);
+		ForkJoinTask<?> f2 = new F2(N, mm, vm, resLock);
 		
-		try {
-			System.out.println(complete1.get());
-		} catch (InterruptedException ex) {
-			System.out.println("Роботу потоку F1 було перервано - " + ex);
-		} catch (ExecutionException ex) {
-			System.out.println("Помилка в роботі потоку F1 - " + ex);
-		}
-		try {
-			System.out.println(complete2.get());
-		} catch (InterruptedException ex) {
-			System.out.println("Роботу потоку F2 було перервано - " + ex);
-		} catch (ExecutionException ex) {
-			System.out.println("Помилка в роботі потоку F2 - " + ex);
-		}
+		forkJoinPool.execute(f1);
+		forkJoinPool.execute(f2);
+		
+		f1.join();
+		f2.join();
 		
 		long ms = System.currentTimeMillis() - start;
 		String msMessage = "Час виконання: " + ms + " мс";
