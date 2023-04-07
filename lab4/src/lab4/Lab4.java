@@ -1,10 +1,13 @@
-// ./lab4/src/lab4/Lab2.java
+// ./lab4/src/lab4/Lab4.java
 
 package lab4;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,7 +16,6 @@ import lab4.data.vector.VectorManager;
 import lab4.fs.FileSystem;
 import lab4.threading.F1;
 import lab4.threading.F2;
-import lab4.threading.block.CountingThreadBlock;
 
 public class Lab4 {
 
@@ -32,21 +34,29 @@ public class Lab4 {
 		final int THREAD_AMOUNT = 2;
 		
 		Lock resLock = new ReentrantLock();
-		CountingThreadBlock block = new CountingThreadBlock(THREAD_AMOUNT);
 				
 		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
 		
 		long start = System.currentTimeMillis();
 		
-		Runnable f1 = new F1(N, mm, resLock, block);
-		Runnable f2 = new F2(N, mm, vm, resLock, block);
-		execService.execute(f1);
-		execService.execute(f2);
+		Callable<String> f1 = new F1(N, mm, resLock);
+		Callable<String> f2 = new F2(N, mm, vm, resLock);
+		Future<String> complete1 = execService.submit(f1);
+	    Future<String> complete2 = execService.submit(f2);
 		
 		try {
-			block.waitForAll();
+			System.out.println(complete1.get());
 		} catch (InterruptedException ex) {
-			System.out.println("Неможливо продовжити роботу програми - " + ex);
+			System.out.println("Роботу потоку F1 було перервано - " + ex);
+		} catch (ExecutionException ex) {
+			System.out.println("Помилка в роботі потоку F1 - " + ex);
+		}
+		try {
+			System.out.println(complete2.get());
+		} catch (InterruptedException ex) {
+			System.out.println("Роботу потоку F2 було перервано - " + ex);
+		} catch (ExecutionException ex) {
+			System.out.println("Помилка в роботі потоку F2 - " + ex);
 		}
 		
 		long ms = System.currentTimeMillis() - start;

@@ -63,9 +63,8 @@ public class MatrixManager {
 	}
 
 	public Matrix getMatrix(String name, int size) throws IOException  {
-		try {
-			accessLock.lock();
-			
+		accessLock.lock();
+		try {			
 			Matrix MA = matrixes.get(name);
 			if (MA != null) {
 				return MA;

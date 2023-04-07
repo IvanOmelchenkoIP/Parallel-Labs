@@ -63,9 +63,8 @@ public class VectorManager {
 	}
 
 	public Vector getVector(String name, int size) throws IOException  {
-		try {
-			accessLock.lock();
-			
+		accessLock.lock();
+		try {			
 			Vector A = vectors.get(name);
 			if (A != null) {
 				return A;

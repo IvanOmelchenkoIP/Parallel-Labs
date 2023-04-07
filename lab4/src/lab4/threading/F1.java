@@ -4,28 +4,26 @@
 package lab4.threading;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 
 import lab4.data.matrix.Matrix;
 import lab4.data.matrix.MatrixManager;
-import lab4.threading.block.CountingThreadBlock;
 
-public class F1 implements Runnable {
+public class F1 implements Callable<String> {
 
 	final private int N;
 	final private MatrixManager mm;
 	private final Lock resLock;
-	private CountingThreadBlock block;
 
-	public F1(int N, MatrixManager mm, Lock resLock, CountingThreadBlock block) {
+	public F1(int N, MatrixManager mm, Lock resLock) {
 		this.N = N;
 		this.resLock = resLock;
-		this.block = block;
 		this.mm = mm;
 	}
 
 	@Override
-	public void run() {
+	public String call() throws IOException, Exception {
 		Matrix MD, MT, MZ, ME, MM;
 		try {
 			MD = mm.getMatrix("MD", N);
@@ -34,13 +32,9 @@ public class F1 implements Runnable {
 			ME = mm.getMatrix("ME", N);
 			MM = mm.getMatrix("MM", N);
 		} catch (IOException ex) {
-			System.out.println("Неможливо продовжити роботу потоку F1 (помилка файлової системи) - " + ex);
-			block.completeTask();
-			return;
+			throw ex;
 		} catch (Exception ex) {
-			System.out.println("Неможливо продовжити роботу потоку F1 - " + ex);
-			block.completeTask();
-			return;
+			throw ex;
 		}
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
 		try {
@@ -50,11 +44,11 @@ public class F1 implements Runnable {
 			try {
 				mm.writeToFile(mm.getOutPath(), "MA", MA);
 			} catch (IOException ex) {
-				System.out.println("Неможливо продовжити роботу потоку F1 (помилка при записі результату у файл) - " + ex);
+				throw ex;
 			}
 		} finally {
 			resLock.unlock();
-			block.completeTask();
 		}
+		return "Потік для функцій F1 успішно завершив обчислення і виведення результату.";
 	}
 }
