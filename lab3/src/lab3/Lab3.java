@@ -1,4 +1,4 @@
-// ./lab3/src/lab3/Lab2.java
+// ./lab3/src/lab3/Lab3.java
 
 package lab3;
 
@@ -37,9 +37,10 @@ public class Lab3 {
 		ExecutorService execService = Executors.newFixedThreadPool(THREAD_AMOUNT);
 		
 		long start = System.currentTimeMillis();
-		
+
 		execService.execute(new F1(N, mm, semaphore, countDownLatch));
 		execService.execute(new F2(N, mm, vm, semaphore, countDownLatch));
+		
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException ex) {
