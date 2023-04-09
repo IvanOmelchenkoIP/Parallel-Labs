@@ -4,7 +4,7 @@
 package lab5.threading;
 
 import java.io.IOException;
-import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.locks.Lock;
 
 import lab5.data.matrix.Matrix;
@@ -12,7 +12,7 @@ import lab5.data.matrix.MatrixManager;
 import lab5.data.vector.Vector;
 import lab5.data.vector.VectorManager;
 
-public class F2 extends RecursiveAction {
+public class F2 extends RecursiveTask<String> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -29,7 +29,7 @@ public class F2 extends RecursiveAction {
 	}
 
 	@Override
-	protected void compute() {
+	protected String compute() {
 		Vector D, B;
 		Matrix MT;
 		try {
@@ -37,11 +37,9 @@ public class F2 extends RecursiveAction {
 			B = vm.getVector("B", N);
 			MT = mm.getMatrix("MT", N);
 		} catch (IOException ex) {
-			System.out.println("Неможливо продовжити роботу потоку F2 (помилка файлової системи) - " + ex);		
-			return;
+			throw new RuntimeException(ex);
 		} catch (Exception ex) {
-			System.out.println("Неможливо продовжити роботу потоку F2 - " + ex);
-			return;
+			throw new RuntimeException(ex);
 		}
 		Vector A = D.getMatrixMultiplyProduct(MT).getVectorDifference(B.getScalarMultiplyProduct(D.max()));
 		try {
@@ -51,11 +49,11 @@ public class F2 extends RecursiveAction {
 			try {
 				vm.writeToFile(mm.getOutPath(), "A", A);
 			} catch (IOException ex) {
-				System.out.println("Неможливо продовжити роботу потоку F2 (помилка при записі результату) - " + ex);
+				throw new RuntimeException(ex);
 			}
 		} finally {
 			resLock.unlock();
 		}
-		
+		return "Потік для функцій F2 успішно завершив обчислення і виведення результату.";
 	}
 }

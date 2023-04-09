@@ -5,6 +5,8 @@ package lab5;
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.Future;
+import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -23,7 +25,7 @@ public class Lab5 {
 		final int MAX_PRECISION = 15;
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
-		final String OUTPUT_PATH = "../output/output5.txt";
+		final String OUTPUT_PATH = "../output/output5-2.txt";
 		
 		VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
 		MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
@@ -39,11 +41,19 @@ public class Lab5 {
 		ForkJoinTask<?> f1 = new F1(N, mm, resLock);
 		ForkJoinTask<?> f2 = new F2(N, mm, vm, resLock);
 		
-		forkJoinPool.execute(f1);
-		forkJoinPool.execute(f2);
+		Future<?> f1Future = forkJoinPool.submit(f1);
+		Future<?> f2Future = forkJoinPool.submit(f2);
 		
-		f1.join();
-		f2.join();
+		try {
+			System.out.println(f1Future.get());
+		} catch (Exception ex) {
+			System.out.println("Помилка в роботі потоку F1 - " + ex);
+		}
+		try {
+			System.out.println(f2Future.get());
+		} catch (Exception ex) {
+			System.out.println("Помилка в роботі потоку F2 - " + ex);
+		}
 		
 		long ms = System.currentTimeMillis() - start;
 		String msMessage = "Час виконання: " + ms + " мс";
