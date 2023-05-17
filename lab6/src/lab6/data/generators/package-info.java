@@ -1,0 +1,1 @@
+package lab6.data.generators;

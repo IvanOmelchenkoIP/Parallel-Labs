@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class MemFileSystem extends FileSystem {
 	
-	private final static HashMap<String, String> files = new HashMap<String, String>();
+	private final HashMap<String, String> files = new HashMap<String, String>();
 	
 	@Override
 	public String read(String filepath) throws IOException {

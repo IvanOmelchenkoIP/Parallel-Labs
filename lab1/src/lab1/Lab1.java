@@ -11,7 +11,7 @@ import lab1.threading.F2;
 public class Lab1 {
 
 	public static void main(String[] args) {
-		final String OUTPUT_PATH = "../output/output1.txt";
+		final String OUTPUT_PATH = "../output/output1-corrected.txt";
 
 		FileSystem fs = new FileSystem();
 		long start = System.currentTimeMillis();

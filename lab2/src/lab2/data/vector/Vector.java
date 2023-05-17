@@ -43,7 +43,7 @@ public class Vector {
 		double[] valueB = B.getValue();
 		double[] valueC = new double[size];
 		for (int i = 0; i < size; i++) {
-			valueC[i] = valueA[i] - valueB[i] * (-1);
+			valueC[i] = valueA[i] - valueB[i];
 		}
 		return new Vector(size, valueC);
 	}
@@ -64,7 +64,7 @@ public class Vector {
 	public Vector getScalarMultiplyProduct(double a) {
 		double[] valueC = new double[size];
 		for (int i = 0; i < size; i++) {
-			valueC[i] *= a;
+			valueC[i] = a * valueA[i];
 		}
 		return new Vector(size, valueC);
 	}
