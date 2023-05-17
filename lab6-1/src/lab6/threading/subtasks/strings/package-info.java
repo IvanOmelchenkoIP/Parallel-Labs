@@ -1,0 +1,1 @@
+package lab6.threading.subtasks.strings;

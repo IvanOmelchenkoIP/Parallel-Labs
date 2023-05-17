@@ -3,19 +3,13 @@
 package lab2.data.vector;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 
 import lab2.data.DataFinder;
 import lab2.data.generators.DoubleArrayGenerator;
 import lab2.fs.MemFileSystem;
 
 public class VectorManager {
-	
-	final private Semaphore accessSemaphore;
-	
-	final private HashMap<String, Vector> vectors;
-	
+
 	final private int minVal;
 	final private int maxVal;
 	final private int minPrecision;
@@ -29,10 +23,6 @@ public class VectorManager {
 	final private DoubleArrayGenerator dg;
 	
 	public VectorManager(int minVal, int maxVal, int minPrecision, int maxPrecision, String inPath, String outPath) {		
-		this.accessSemaphore = new Semaphore(1);
-		
-		this.vectors = new HashMap<String, Vector>();
-		
 		this.minVal = minVal;
 		this.maxVal = maxVal;
 		this.minPrecision = minPrecision;
@@ -61,24 +51,14 @@ public class VectorManager {
 	}
 
 	public Vector getVector(String name, int size) throws InterruptedException, IOException  {
-		try {
-			accessSemaphore.acquire();
-			
-			Vector A = vectors.get(name);
-			if (A != null) {
-				return A;
-			}
-			if (fs.exists(inPath)) {
-				A = readFromFile(name, size);
-			}
-			if (A == null) {
-				A = createNew(name, size);
-			}
-			vectors.put(name, A);
-			return A;
-		} finally {
-			accessSemaphore.release();
+		Vector A = null;
+		if (fs.exists(inPath)) {
+			A = readFromFile(name, size);
 		}
+		if (A == null) {
+			A = createNew(name, size);
+		}
+		return A;
 	}
 	
 	public void writeToFile(String filepath, String name, Vector vector) throws IOException {

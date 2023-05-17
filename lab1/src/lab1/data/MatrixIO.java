@@ -11,7 +11,7 @@ import lab1.fs.FileSystem;
 public class MatrixIO {
 	
 	final private String INPUT_PATH = "../input/input.txt";
-	final private String OUTPUT_PATH = "../output/output1.txt";
+	final private String OUTPUT_PATH = "../output/output1-corrected.txt";
 	
 	final FileSystem fs = new FileSystem();
 	

@@ -4,13 +4,12 @@ package lab6.data.matrix;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import lab6.data.DataFinder;
 import lab6.data.generators.DoubleArrayGenerator;
-import lab6.fs.MemFileSystem;
+import lab6.fs.FileSystem;
 
 public class MatrixManager {
 	
@@ -23,14 +22,12 @@ public class MatrixManager {
 	final private int minPrecision;
 	final private int maxPrecision;
 	
-	final private String inPath;
-	final private String outPath;
-	final private MemFileSystem fs;
+	final private FileSystem fs;
 	
 	final private DataFinder df;
 	final private DoubleArrayGenerator dg;
 	
-	public MatrixManager(int minVal, int maxVal, int minPrecision, int maxPrecision, String inPath, String outPath) {
+	public MatrixManager(int minVal, int maxVal, int minPrecision, int maxPrecision, FileSystem fs) {
 		this.accessLock = new ReentrantLock();
 
 		this.matrixes = new HashMap<String, Matrix>();
@@ -40,21 +37,19 @@ public class MatrixManager {
 		this.minPrecision = minPrecision;
 		this.maxPrecision = maxPrecision;
 		
-		this.inPath = inPath;
-		this.outPath = outPath;
+		this.fs = fs;
 		
-		this.fs = new MemFileSystem();
 		this.df = new DataFinder();
 		this.dg = new DoubleArrayGenerator();
 	}
 		
-	private Matrix createNew(String name, int size) throws IOException {
-		Matrix MA = new Matrix(size, dg.generate2DDoubleArray(size, minVal, maxVal, minPrecision, maxPrecision));
-		writeToFile(inPath, name, MA);
+	private Matrix createNew(String name, int size, String inPath) throws IOException {
+		Matrix MA = new Matrix(dg.generate2DDoubleArray(size, minVal, maxVal, minPrecision, maxPrecision));
+		fs.write(inPath, name + "\n" + MA.toString());
 		return MA;
 	}
 	
-	private Matrix getFromFile(String name, int size) throws IOException {
+	private Matrix getFromFile(String name, int size, String inPath) throws IOException {
 		String contents = fs.read(inPath).trim();
 		if (!contents.contains(name + "\n")) {
 			return null;
@@ -62,7 +57,7 @@ public class MatrixManager {
 		return Matrix.fromString(df.findMatrix(contents, name, size));
 	}
 
-	public Matrix getMatrix(String name, int size) throws IOException  {
+	public Matrix getMatrix(String name, int size, String inPath) throws IOException  {
 		accessLock.lock();
 		try {			
 			Matrix MA = matrixes.get(name);
@@ -70,23 +65,15 @@ public class MatrixManager {
 				return MA;
 			}
 			if (fs.exists(inPath)) {
-				MA = getFromFile(name, size);
+				MA = getFromFile(name, size, inPath);
 			}
 			if (MA == null) {
-				MA = createNew(name, size);
+				MA = createNew(name, size, inPath);
 			}
 			matrixes.put(name, MA);
 			return MA;
 		} finally {
 			accessLock.unlock();
 		}
-	}
-	
-	public void writeToFile(String filepath, String name, Matrix matrix) throws IOException {
-		fs.write(filepath, name + "\n" + matrix.toString());
-	}
-	
-	public String getOutPath() {
-		return outPath;
 	}
 }

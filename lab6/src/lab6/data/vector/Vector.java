@@ -7,12 +7,12 @@ import lab6.data.matrix.Matrix;
 
 public class Vector {
 	
-	final private int size;
+	final private int N;
 	final private double[] valueA;
 	
-	public Vector(int size, double[] valueA) {
-		this.size = size;
+	public Vector(double[] valueA) {
 		this.valueA = valueA;
+		this.N = valueA.length;
 	}
 	
 	public static Vector fromString(String str) {
@@ -22,7 +22,7 @@ public class Vector {
 		for (int i = 0; i < size; i++) {
 			valueA[i] = Double.parseDouble(elements[i]);
 		}
-		return new Vector(size, valueA);
+		return new Vector(valueA);
 	}
 	
 	@Override
@@ -41,37 +41,37 @@ public class Vector {
 	
 	public Vector getVectorDifference(Vector B) {
 		double[] valueB = B.getValue();
-		double[] valueC = new double[size];
-		for (int i = 0; i < size; i++) {
-			valueC[i] = valueA[i] - valueB[i] * (-1);
+		double[] valueC = new double[N];
+		for (int i = 0; i < N; i++) {
+			valueC[i] = valueA[i] - valueB[i];
 		}
-		return new Vector(size, valueC);
+		return new Vector(valueC);
 	}
 	
 	public Vector getMatrixMultiplyProduct(Matrix MA) {
 		double[][] valueMA = MA.getValue();
-		double[] valueC = new double[size];
-		for (int i = 0; i < size; i++) {
-			double[] products = new double[size];
-			for (int j = 0; j < size; j++) {
+		double[] valueB = new double[N];
+		for (int i = 0; i < N; i++) {
+			double[] products = new double[N];
+			for (int j = 0; j < N; j++) {
 				products[j] = valueMA[i][j] * valueA[j];
 			}
-			valueC[i] = KahanSum.add(products);
+			valueB[i] = KahanSum.add(products);
 		}
-		return new Vector(size, valueC);
+		return new Vector(valueB);
 	}
 	
 	public Vector getScalarMultiplyProduct(double a) {
-		double[] valueC = new double[size];
-		for (int i = 0; i < size; i++) {
-			valueC[i] *= a;
+		double[] valueB = new double[N];
+		for (int i = 0; i < N; i++) {
+			valueB[i] = a * valueA[i];
 		}
-		return new Vector(size, valueC);
+		return new Vector(valueB);
 	}
 	
 	public double max() {
 		double max = valueA[0];
-		for (int i = 1; i < size; i++) {
+		for (int i = 1; i < N; i++) {
 			if (valueA[i] > max) {
 				max = valueA[i];
 			}

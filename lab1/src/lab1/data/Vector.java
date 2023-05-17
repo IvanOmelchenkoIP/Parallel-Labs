@@ -76,7 +76,7 @@ public class Vector {
 	public Vector getScalarMultiplyProduct(double a) {
 		double[] valueC = new double[size];
 		for (int i = 0; i < size; i++) {
-			valueC[i] *= a;
+			valueC[i] = a * valueA[i];
 		}
 		return new Vector(size, valueC);
 	}

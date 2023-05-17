@@ -3,17 +3,16 @@
 package lab6;
 
 import java.io.IOException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.Future;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import lab6.data.matrix.MatrixManager;
 import lab6.data.vector.VectorManager;
 import lab6.fs.FileSystem;
+import lab6.fs.MemFileSystem;
 import lab6.threading.F1;
 import lab6.threading.F2;
+import lab6.threading.consumer.OutConsumer;
 
 public class Lab6 {
 
@@ -24,39 +23,35 @@ public class Lab6 {
 		final int MAX_PRECISION = 15;
 		final int N = 100;
 		final String INPUT_PATH = "../input/input.txt";
-		final String OUTPUT_PATH = "../output/output5-2.txt";
+		final String OUTPUT_PATH = "../output/output6.txt";
 		
-		VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
-		MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, INPUT_PATH, OUTPUT_PATH);
+		FileSystem fs = new MemFileSystem();
+		
+		VectorManager vm = new VectorManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, fs);
+		MatrixManager mm = new MatrixManager(MIN_VAL, MAX_VAL, MIN_PRECISION, MAX_PRECISION, fs);
 		
 		final int THREAD_AMOUNT = 2;
 		
-		Lock resLock = new ReentrantLock();
-
-		ForkJoinPool forkJoinPool = new ForkJoinPool(THREAD_AMOUNT);
-		
 		long start = System.currentTimeMillis();
 		
-		ForkJoinTask<?> f1 = new F1(N, mm, resLock);
-		ForkJoinTask<?> f2 = new F2(N, mm, vm, resLock);
+		BlockingQueue<String> queue = new ArrayBlockingQueue<String>(1);
 		
-		Future<?> f1Future = forkJoinPool.submit(f1);
-		Future<?> f2Future = forkJoinPool.submit(f2);
+		Thread f1 = new Thread(new F1(N, mm, INPUT_PATH, queue));
+		Thread f2 = new Thread(new F2(N, mm, vm, INPUT_PATH, queue));
+		f1.start();
+		f2.start();
+		Thread consumer = new Thread(new OutConsumer(THREAD_AMOUNT, queue, fs, OUTPUT_PATH));
+
+		consumer.start();
 		
 		try {
-			System.out.println(f1Future.get());
-		} catch (Exception ex) {
-			System.out.println("Помилка в роботі потоку F1 - " + ex);
-		}
-		try {
-			System.out.println(f2Future.get());
-		} catch (Exception ex) {
-			System.out.println("Помилка в роботі потоку F2 - " + ex);
-		}
+			consumer.join();
+		} catch (InterruptedException e) {
+			System.out.println(e);
+		}	
 		
 		long ms = System.currentTimeMillis() - start;
 		String msMessage = "Час виконання: " + ms + " мс";
-		FileSystem fs = new FileSystem();
 		try {
 			fs.write(OUTPUT_PATH, msMessage + "\n\n");
 		} catch (IOException ex) {

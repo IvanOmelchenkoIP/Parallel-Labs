@@ -4,53 +4,40 @@
 package lab6.threading;
 
 import java.io.IOException;
-import java.util.concurrent.RecursiveTask;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.BlockingQueue;
 
 import lab6.data.matrix.Matrix;
 import lab6.data.matrix.MatrixManager;
 
-public class F1 extends RecursiveTask<String> {
-
-	private static final long serialVersionUID = 1L;
+public class F1 implements Runnable {
 	
 	final private int N;
 	final private MatrixManager mm;
-	private final Lock resLock;
-
-	public F1(int N, MatrixManager mm, Lock resLock) {
+	final private String inPath;
+	final private BlockingQueue<String> queue;
+	
+	public F1(int N, MatrixManager mm, String inPath, BlockingQueue<String> queue) {
 		this.N = N;
-		this.resLock = resLock;
 		this.mm = mm;
+		this.inPath = inPath;
+		this.queue = queue;
 	}
 
 	@Override
-	protected String compute() {
+	public void run() {
 		Matrix MD, MT, MZ, ME, MM;
 		try {
-			MD = mm.getMatrix("MD", N);
-			MT = mm.getMatrix("MT", N);
-			MZ = mm.getMatrix("MZ", N);
-			ME = mm.getMatrix("ME", N);
-			MM = mm.getMatrix("MM", N);
+			MD = mm.getMatrix("MD", N, inPath);
+			MT = mm.getMatrix("MT", N, inPath);
+			MZ = mm.getMatrix("MZ", N, inPath);
+			ME = mm.getMatrix("ME", N, inPath);
+			MM = mm.getMatrix("MM", N, inPath);
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 		Matrix MA = MD.getMatrixMultiplyProduct(MT).getMatrixSum(MZ).getMatrixDifference(ME.getMatrixMultiplyProduct(MM));
-		try {
-			resLock.lock();
-			System.out.println("F1");
-			System.out.println(MA.toString());
-			try {
-				mm.writeToFile(mm.getOutPath(), "MA", MA);
-			} catch (IOException ex) {
-				throw new RuntimeException(ex);
-			}
-		} finally {
-			resLock.unlock();
-		}
-		return "Потік для функцій F1 успішно завершив обчислення і виведення результату.";
+		queue.add("MA\n" + MA.toString());		
 	}
 }
